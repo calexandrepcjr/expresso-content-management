@@ -14,3 +14,14 @@ describe("GET /", () => {
     });
   });
 });
+
+describe("GET /health", () => {
+  it("responds with the time that the server received the request", async () => {
+    const response = await request(app).get("/health");
+    expect(response.statusCode).toBe(HttpStatusCode.OK);
+    expect(response.body).toBeInstanceOf(Object);
+    expect(response.body).toMatchObject({
+      receivedAt: expect.any(String),
+    });
+  });
+});
