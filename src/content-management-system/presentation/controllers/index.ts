@@ -1,5 +1,5 @@
 import { Router, Request, Response, NextFunction } from "express";
-import { HttpStatusCode } from "../../utils/httpStatusCode";
+import { HttpStatusCode } from "@src/utils/httpStatusCode";
 
 const router = Router();
 

@@ -1,8 +1,8 @@
 import express, { NextFunction, Request, Response } from "express";
 import cookieParser from "cookie-parser";
 import logger from "morgan";
-import indexRouter from "./presentation/controllers/index";
 import { normalizePort } from "./utils/normalizePort";
+import { loadModule } from "./content-management-system/application/loadModule";
 
 const app = express();
 
@@ -11,8 +11,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-// INFO: API Routes
-app.use("/", indexRouter);
+// INFO: Loaded Modules
+loadModule(app);
 
 // INFO: catch 404 and forward to error handler
 app.use((_r: Request, _re: Response, next: NextFunction) => {
