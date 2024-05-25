@@ -48,6 +48,10 @@ web_modules/
 # TypeScript cache
 *.tsbuildinfo
 
+# TypeScript build
+.build
+.dist
+
 # Optional npm cache directory
 .npm
 
