@@ -7,7 +7,7 @@
     "npm": ">=9.6.4"
   },
   "scripts": {
-    "build": "tsc && tsc-alias",
+    "build": "tsc --project tsconfig.build.json && tsc-alias",
     "prestart": "npm run build",
     "start": "dotenvx run --env-file=.env -- node dist/httpServer",
     "dev": "dotenvx run --env-file=.env.local -- ts-node-dev -r tsconfig-paths/register --debug --respawn src/httpServer",
