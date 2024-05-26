@@ -6,6 +6,12 @@ Playing with express to deliver a basic CMS that returns blog posts
 
 Inspired by [Clean Architecture](https://www.amazon.com.br/Clean-Architecture-Craftsmans-Software-Structure/dp/0134494164)
 
+## How to run the application
+
+Guarantee you have installed both Docker and Docker Composer and run:
+
+`docker compose up`
+
 ## Available Scripts
 
 ### `npm run dev`

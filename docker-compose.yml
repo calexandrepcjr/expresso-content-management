@@ -1,0 +1,22 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    ports:
+      - "3000:3000"
+    expose:
+      - "3000"
+    environment:
+      NODE_ENV: development
+    volumes:
+      - .:/home/appuser/app
+      - /home/appuser/app/node_modules
+      - /home/appuser/app/dist
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
