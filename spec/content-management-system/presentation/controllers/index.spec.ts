@@ -3,9 +3,9 @@ import app from "@src/app";
 import { HttpStatusCode } from "@src/utils/httpStatusCode";
 
 describe("Content Management System", () => {
-  describe("GET /", () => {
+  describe("GET /cms", () => {
     it("responds with basic app information", async () => {
-      const response = await request(app).get("/");
+      const response = await request(app).get("/cms");
       expect(response.statusCode).toBe(HttpStatusCode.OK);
       expect(response.body).toBeInstanceOf(Object);
       expect(response.body).toMatchObject({
@@ -16,9 +16,9 @@ describe("Content Management System", () => {
     });
   });
 
-  describe("GET /health", () => {
+  describe("GET /cms/health", () => {
     it("responds with the time that the server received the request", async () => {
-      const response = await request(app).get("/health");
+      const response = await request(app).get("/cms/health");
       expect(response.statusCode).toBe(HttpStatusCode.OK);
       expect(response.body).toBeInstanceOf(Object);
       expect(response.body).toMatchObject({
