@@ -3,12 +3,14 @@
   "version": "0.0.0",
   "private": true,
   "engines": {
-    "node": ">=20.0.0",
+    "node": ">=22.0.0",
     "npm": ">=9.6.4"
   },
   "scripts": {
-    "start": "tsc && dotenvx run --env-file=.env -- node dist/httpServer",
-    "dev": "dotenvx run --env-file=.env.local -- ts-node-dev src/httpServer",
+    "build": "tsc && tsc-alias",
+    "prestart": "npm run build",
+    "start": "dotenvx run --env-file=.env -- node dist/httpServer",
+    "dev": "dotenvx run --env-file=.env.local -- ts-node-dev -r tsconfig-paths/register --debug --respawn src/httpServer",
     "test": "dotenvx run --env-file=.env.local -- jest",
     "lint": "eslint . --ext .ts --fix"
   },
@@ -39,6 +41,7 @@
     "ts-jest": "^29.1.3",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.4.5"
   },
   "jest": {

@@ -1,7 +1,7 @@
 import http from "http";
 import debugLib from "debug";
-import app from "./app";
-import { normalizePort } from "./utils/normalizePort";
+import app from "@src/app";
+import { normalizePort } from "@src/utils/normalizePort";
 
 const appName = process.env["APP_NAME"];
 const debug = debugLib(`${appName}:server`);
