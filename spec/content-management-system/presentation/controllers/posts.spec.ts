@@ -25,6 +25,25 @@ describe("[CMS] Posts", () => {
       };
 
       const response = await request(app).get("/cms/posts");
+
+      expect(response.statusCode).toBe(HttpStatusCode.OK);
+      expect(response.body).toBeInstanceOf(Object);
+      expect(response.body).toMatchObject(expected);
+    });
+  });
+  ("");
+  describe("GET /cms/posts/:postId", () => {
+    it("responds with a specific user post", async () => {
+      const expected = {
+        id: 1,
+        category: "Nerdy stuff",
+        content: "Testing some nerdy stuff",
+        createdAt: expect.any(String),
+        updatedAt: expect.any(String),
+      };
+
+      const response = await request(app).get(`/cms/posts/${expected.id}`);
+
       expect(response.statusCode).toBe(HttpStatusCode.OK);
       expect(response.body).toBeInstanceOf(Object);
       expect(response.body).toMatchObject(expected);
