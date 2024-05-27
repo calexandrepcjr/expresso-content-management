@@ -2,7 +2,8 @@ import { Router, Request, Response, NextFunction } from "express";
 import { HttpStatusCode } from "@src/utils/httpStatusCode";
 import { PostRepository } from "@src/content-management-system/infrastructure/in-memory/repositories/postRepository";
 import { Config } from "@src/content-management-system/config/config";
-import { isLeft } from "fp-ts/lib/Either";
+import { pipe } from "fp-ts/lib/function";
+import { either } from "fp-ts";
 
 const router = Router();
 // TODO: Use DI
@@ -12,25 +13,27 @@ router.get("/posts", async (_r: Request, res: Response, _: NextFunction) => {
   // TODO: Use Use case instead
   const maybePosts = await postsRepository.findAll(Config.RootUserId);
 
-  if (isLeft(maybePosts)) {
-    const anError = maybePosts.left;
-
-    res.status(HttpStatusCode.InternalServerError).json({
-      errors: [
-        {
-          name: anError.name,
-          message: anError.message,
-        },
-      ],
-      posts: [],
-    });
-
-    return;
-  }
-
-  res.status(HttpStatusCode.OK).json({
-    posts: maybePosts.right,
-  });
+  pipe(
+    maybePosts,
+    either.match(
+      (anError) => {
+        res.status(HttpStatusCode.InternalServerError).json({
+          errors: [
+            {
+              name: anError.name,
+              message: anError.message,
+            },
+          ],
+          posts: [],
+        });
+      },
+      (posts) => {
+        res.status(HttpStatusCode.OK).json({
+          posts,
+        });
+      },
+    ),
+  );
 });
 router.get(
   "/posts/:postId",
@@ -53,25 +56,27 @@ router.get(
 
     const maybePost = await postsRepository.findById(Config.RootUserId, postId);
 
-    if (isLeft(maybePost)) {
-      const anError = maybePost.left;
-
-      res.status(HttpStatusCode.InternalServerError).json({
-        errors: [
-          {
-            name: anError.name,
-            message: anError.message,
-          },
-        ],
-        posts: [],
-      });
-
-      return;
-    }
-
-    res.status(HttpStatusCode.OK).json({
-      post: maybePost.right,
-    });
+    pipe(
+      maybePost,
+      either.match(
+        (anError) => {
+          res.status(HttpStatusCode.InternalServerError).json({
+            errors: [
+              {
+                name: anError.name,
+                message: anError.message,
+              },
+            ],
+            posts: [],
+          });
+        },
+        (post) => {
+          res.status(HttpStatusCode.OK).json({
+            post,
+          });
+        },
+      ),
+    );
   },
 );
 
