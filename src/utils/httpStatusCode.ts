@@ -86,6 +86,12 @@ export enum HttpStatusCode {
   NotFound = 404,
 
   /**
+   * 422 Unprocessable Entity
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/422}
+   */
+  UnprocessableEntity = 422,
+
+  /**
    * 500 Internal Server Error
    * @see {@link https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500}
    */

@@ -1,3 +1,3 @@
 export abstract class BaseEntity {
-  public constructor(protected readonly id: number) {}
+  public constructor(public readonly id: number) {}
 }
