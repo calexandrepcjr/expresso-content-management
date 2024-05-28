@@ -1,6 +1,8 @@
 import request from "supertest";
 import app from "@src/app";
 import { HttpStatusCode } from "@src/utils/httpStatusCode";
+import { InternetMediaType } from "@src/utils/internetMediaType";
+import { faker } from "@faker-js/faker";
 
 describe("[CMS] Posts", () => {
   describe("GET /cms/posts", () => {
@@ -31,7 +33,6 @@ describe("[CMS] Posts", () => {
       expect(response.body).toMatchObject(expected);
     });
   });
-  ("");
   describe("GET /cms/posts/:postId", () => {
     it("responds with a specific user post", async () => {
       const expected = {
@@ -55,6 +56,33 @@ describe("[CMS] Posts", () => {
       const response = await request(app).get("/cms/posts/theInvalidPostId");
 
       expect(response.statusCode).toBe(HttpStatusCode.UnprocessableEntity);
+    });
+  });
+  describe("POST /cms/posts", () => {
+    it("creates a user post", async () => {
+      const expected = {
+        post: {
+          id: 3,
+          category: faker.word.noun(),
+          content: faker.lorem.paragraphs(),
+          createdAt: expect.any(String),
+          updatedAt: expect.any(String),
+        },
+      };
+      const payload = {
+        category: expected.post.category,
+        content: expected.post.content,
+      };
+
+      const response = await request(app)
+        .post("/cms/posts")
+        .send(payload)
+        .set("Content-Type", InternetMediaType.ApplicationJson)
+        .set("Accept", InternetMediaType.ApplicationJson);
+
+      expect(response.statusCode).toBe(HttpStatusCode.OK);
+      expect(response.body).toBeInstanceOf(Object);
+      expect(response.body).toMatchObject(expected);
     });
   });
 });
