@@ -5,4 +5,5 @@ import { Either } from "fp-ts/lib/Either";
 export interface PostRepository {
   findAll(userId: UserId): Promise<Either<Error, Post[]>>;
   findById(userId: UserId, postId: number): Promise<Either<Error, Post>>;
+  create(userId: UserId, aPost: Post): Promise<void>;
 }

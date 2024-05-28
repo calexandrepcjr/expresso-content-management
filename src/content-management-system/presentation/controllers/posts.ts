@@ -4,6 +4,7 @@ import { PostRepository } from "@src/content-management-system/infrastructure/in
 import { Config } from "@src/content-management-system/config/config";
 import { pipe } from "fp-ts/lib/function";
 import { either } from "fp-ts";
+import { Post } from "@src/content-management-system/domain/entities/post";
 
 const router = Router();
 // TODO: Use DI
@@ -77,6 +78,35 @@ router.get(
         },
       ),
     );
+  },
+);
+router.post(
+  "/posts",
+  async (request: Request, res: Response, _: NextFunction) => {
+    // TODO: Use Use case instead
+    // TODO: Validate request
+    const rawPost = request.body;
+    const post = new Post({
+      ...rawPost,
+    });
+
+    await postsRepository.create(Config.RootUserId, post);
+
+    if (!post.isPersisted()) {
+      res.status(HttpStatusCode.InternalServerError).json({
+        errors: [
+          {
+            name: "InfrastructureError",
+            message: "Failed to persist Post",
+          },
+        ],
+        posts: [],
+      });
+    }
+
+    res.status(HttpStatusCode.OK).json({
+      post,
+    });
   },
 );
 

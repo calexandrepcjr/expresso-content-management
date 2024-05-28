@@ -2,6 +2,7 @@ import { UserId } from "@src/auth/domain/interfaces/userId";
 import { Config } from "@src/content-management-system/config/config";
 import { Post } from "@src/content-management-system/domain/entities/post";
 import { PostRepository as DomainPostRepository } from "@src/content-management-system/domain/interfaces/postRepository";
+import { MutableRequired } from "@src/utils/mutableRequired";
 import { either } from "fp-ts";
 import { Either } from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/function";
@@ -34,7 +35,7 @@ export class PostRepository implements DomainPostRepository {
   }
 
   public async findById(
-    userId: string,
+    userId: UserId,
     postId: number,
   ): Promise<Either<Error, Post>> {
     const maybeSomePosts = await this.findAll(userId);
@@ -46,5 +47,32 @@ export class PostRepository implements DomainPostRepository {
           somePosts.find((aPost) => aPost.id === postId) ?? Post.empty(),
       ),
     );
+  }
+
+  public async create(
+    userId: UserId,
+    aPost: MutableRequired<Post>,
+  ): Promise<void> {
+    const someUserPosts = PostRepository.storage.get(userId);
+
+    if (!someUserPosts) {
+      const aNewPost = new Post({
+        ...aPost,
+        id: 1,
+      });
+      aPost.id = aNewPost.id;
+
+      PostRepository.storage.set(userId, [aNewPost]);
+
+      return;
+    }
+    const lastId = someUserPosts[someUserPosts.length - 1]?.id ?? 1;
+    const aNewPost = new Post({
+      ...aPost,
+      id: lastId + 1,
+    });
+    aPost.id = aNewPost.id;
+
+    someUserPosts.push(aNewPost);
   }
 }
