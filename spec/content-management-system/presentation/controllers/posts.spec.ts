@@ -50,5 +50,11 @@ describe("[CMS] Posts", () => {
       expect(response.body).toBeInstanceOf(Object);
       expect(response.body).toMatchObject(expected);
     });
+
+    it("fails with an NaN post id", async () => {
+      const response = await request(app).get("/cms/posts/theInvalidPostId");
+
+      expect(response.statusCode).toBe(HttpStatusCode.UnprocessableEntity);
+    });
   });
 });
