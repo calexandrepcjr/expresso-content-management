@@ -3,15 +3,15 @@ info:
   title: expresso-content-management
   version: 0.0.0
 paths:
-  "":
+  /cms:
     get:
-      operationId: Get
+      operationId: GetCms
       summary: Retrieves CMS base info.
       tags:
         - content-management-system
       responses:
         "200":
-          description: GET  Positive response
+          description: GET /cms Positive response
           content:
             application/json:
               schema:
@@ -37,7 +37,7 @@ paths:
                   - status
                   - data
         "400":
-          description: GET  Negative response
+          description: GET /cms Negative response
           content:
             application/json:
               schema:
@@ -595,33 +595,38 @@ paths:
                   data:
                     type: object
                     properties:
-                      id:
-                        type: number
-                        format: double
-                        minimum: -1.7976931348623157e+308
-                        maximum: 1.7976931348623157e+308
-                      category:
-                        type: string
-                      content:
-                        type: string
-                      createdAt:
-                        description: YYYY-MM-DDTHH:mm:ss.sssZ
-                        type: string
-                        format: date-time
-                        externalDocs:
-                          url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
-                      updatedAt:
-                        description: YYYY-MM-DDTHH:mm:ss.sssZ
-                        type: string
-                        format: date-time
-                        externalDocs:
-                          url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
+                      post:
+                        type: object
+                        properties:
+                          id:
+                            type: number
+                            format: double
+                            minimum: -1.7976931348623157e+308
+                            maximum: 1.7976931348623157e+308
+                          category:
+                            type: string
+                          content:
+                            type: string
+                          createdAt:
+                            description: YYYY-MM-DDTHH:mm:ss.sssZ
+                            type: string
+                            format: date-time
+                            externalDocs:
+                              url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
+                          updatedAt:
+                            description: YYYY-MM-DDTHH:mm:ss.sssZ
+                            type: string
+                            format: date-time
+                            externalDocs:
+                              url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
+                        required:
+                          - id
+                          - category
+                          - content
+                          - createdAt
+                          - updatedAt
                     required:
-                      - id
-                      - category
-                      - content
-                      - createdAt
-                      - updatedAt
+                      - post
                 required:
                   - status
                   - data
