@@ -3,6 +3,57 @@ info:
   title: expresso-content-management
   version: 0.0.0
 paths:
+  "":
+    get:
+      operationId: Get
+      summary: API home
+      responses:
+        "200":
+          description: GET  Positive response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: success
+                  data:
+                    type: object
+                    properties:
+                      greetings:
+                        type: string
+                    required:
+                      - greetings
+                required:
+                  - status
+                  - data
+        "400":
+          description: GET  Negative response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: error
+                  error:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                    required:
+                      - message
+                required:
+                  - status
+                  - error
+              examples:
+                example1:
+                  value:
+                    status: error
+                    error:
+                      message: Sample error message
   /cms:
     get:
       operationId: GetCms
