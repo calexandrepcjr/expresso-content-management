@@ -44,9 +44,7 @@ export const getPosts = taggedEndpointsFactory.build({
             ],
           });
         },
-        (posts) => {
-          return { posts };
-        },
+        (posts) => ({ posts }),
       ),
     );
   },

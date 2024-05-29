@@ -4,6 +4,7 @@ import { getHealth } from "./controllers/getHealth";
 import { getRoot } from "./controllers/getRoot";
 import { getPosts } from "./controllers/getPosts";
 import { getPostById } from "./controllers/getPostById";
+import { updateWholePost } from "./controllers/updateWholePost";
 
 export const routes: Routing = {
   cms: {
@@ -16,6 +17,7 @@ export const routes: Routing = {
       ":postId": new DependsOnMethod({
         post: createPost,
         get: getPostById,
+        put: updateWholePost,
       }),
     },
     health: getHealth,
