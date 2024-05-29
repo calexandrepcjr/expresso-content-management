@@ -8,6 +8,8 @@ const localRequest = request("http://localhost:3000");
 describe("[CMS] Posts", () => {
   describe("GET /cms/posts", () => {
     it("responds with all user posts", async () => {
+      // TODO: Add delete call and recreate them considering the POST/PUT/PATCH calls
+
       const expected = {
         status: "success",
         data: {
@@ -132,6 +134,38 @@ describe("[CMS] Posts", () => {
       expect(getByIdResponse.statusCode).toBe(HttpStatusCode.OK);
       expect(getByIdResponse.body).toBeInstanceOf(Object);
       expect(getByIdResponse.body).toMatchObject(expected);
+    });
+    describe("DELETE /cms/posts", () => {
+      it("removes all user posts", async () => {
+        const expected = {
+          status: "success",
+          data: {
+            deletedAt: expect.any(String),
+          },
+        };
+
+        const response = await localRequest
+          .delete("/cms/posts")
+          .set("Content-Type", InternetMediaType.ApplicationJson)
+          .set("Accept", InternetMediaType.ApplicationJson);
+
+        expect(response.statusCode).toBe(HttpStatusCode.OK);
+        expect(response.body).toBeInstanceOf(Object);
+        expect(response.body).toMatchObject(expected);
+
+        const getAllExpected = {
+          status: "success",
+          data: {
+            posts: [],
+          },
+        };
+
+        const getAllResponse = await localRequest.get("/cms/posts");
+
+        expect(getAllResponse.statusCode).toBe(HttpStatusCode.OK);
+        expect(getAllResponse.body).toBeInstanceOf(Object);
+        expect(getAllResponse.body).toMatchObject(getAllExpected);
+      });
     });
   });
 });
