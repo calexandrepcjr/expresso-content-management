@@ -73,7 +73,7 @@ describe("[CMS] Posts", () => {
         status: "created",
         data: {
           post: {
-            id: 3,
+            id: expect.any(Number),
             category: faker.word.noun(),
             content: faker.lorem.paragraphs(),
             createdAt: expect.any(String),
@@ -95,6 +95,43 @@ describe("[CMS] Posts", () => {
       expect(response.statusCode).toBe(HttpStatusCode.Created);
       expect(response.body).toBeInstanceOf(Object);
       expect(response.body).toMatchObject(expected);
+    });
+  });
+  describe("PUT /cms/posts/:postId", () => {
+    it("updates a whole user post", async () => {
+      const expectedPost = {
+        id: 3,
+        category: faker.word.noun(),
+        content: faker.lorem.paragraphs(),
+        createdAt: expect.any(String),
+        updatedAt: expect.any(String),
+      };
+      const expected = {
+        status: "success",
+        data: {
+          post: expectedPost,
+        },
+      };
+      const payload = expectedPost;
+
+      const response = await localRequest
+        .put(`/cms/posts/${expectedPost.id}`)
+        .send(payload)
+        .set("Content-Type", InternetMediaType.ApplicationJson)
+        .set("Accept", InternetMediaType.ApplicationJson);
+
+      expect(response.statusCode).toBe(HttpStatusCode.OK);
+      expect(response.body).toBeInstanceOf(Object);
+      expect(response.body).toMatchObject(expected);
+
+      const getByIdResponse = await localRequest
+        .get(`/cms/posts/${expectedPost.id}`)
+        .set("Content-Type", InternetMediaType.ApplicationJson)
+        .set("Accept", InternetMediaType.ApplicationJson);
+
+      expect(getByIdResponse.statusCode).toBe(HttpStatusCode.OK);
+      expect(getByIdResponse.body).toBeInstanceOf(Object);
+      expect(getByIdResponse.body).toMatchObject(expected);
     });
   });
 });
