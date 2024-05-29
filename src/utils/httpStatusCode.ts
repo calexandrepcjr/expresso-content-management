@@ -86,6 +86,12 @@ export enum HttpStatusCode {
   NotFound = 404,
 
   /**
+   * 409 Conflict
+   * @see {@link https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/409}
+   */
+  Conflict = 409,
+
+  /**
    * 422 Unprocessable Entity
    * @see {@link https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/422}
    */

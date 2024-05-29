@@ -1,9 +1,13 @@
 {
   "extends": "./tsconfig.build.json",
-  "baseUrl": "./" /* Specify the base directory to resolve non-relative module names. */,
-  "paths": {
-    "@src/*": ["./src/*"],
-    "@spec/*": ["./spec/*"],
-  } /* Specify a set of entries that re-map imports to additional lookup locations. */,
+  "compilerOptions": {
+    "rootDir": "./",
+    "baseUrl": "./",
+    "paths": {
+      "@src/*": ["./src/*"],
+      "@spec/*": ["./spec/*"]
+    },
+  },
   "include": ["src/**/*.ts", "spec/**/*.ts"],
+  "exclude": ["node_modules", "dist", "./src/generateDocumentation.ts"]
 }

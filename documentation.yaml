@@ -1,0 +1,723 @@
+openapi: 3.1.0
+info:
+  title: expresso-content-management
+  version: 0.0.0
+paths:
+  "":
+    get:
+      operationId: Get
+      summary: Retrieves CMS base info.
+      tags:
+        - content-management-system
+      responses:
+        "200":
+          description: GET  Positive response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: success
+                  data:
+                    type: object
+                    properties:
+                      appName:
+                        type: string
+                      title:
+                        type: string
+                      content:
+                        type: string
+                    required:
+                      - appName
+                      - title
+                      - content
+                required:
+                  - status
+                  - data
+        "400":
+          description: GET  Negative response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: error
+                  error:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                    required:
+                      - message
+                required:
+                  - status
+                  - error
+              examples:
+                example1:
+                  value:
+                    status: error
+                    error:
+                      message: Sample error message
+  /cms/posts:
+    get:
+      operationId: GetCmsPosts
+      summary: Get all posts
+      tags:
+        - posts
+      responses:
+        "200":
+          description: GET /cms/posts Positive response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: success
+                  data:
+                    type: object
+                    properties:
+                      posts:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: number
+                              format: double
+                              minimum: -1.7976931348623157e+308
+                              maximum: 1.7976931348623157e+308
+                            category:
+                              type: string
+                            content:
+                              type: string
+                            createdAt:
+                              description: YYYY-MM-DDTHH:mm:ss.sssZ
+                              type: string
+                              format: date-time
+                              externalDocs:
+                                url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
+                            updatedAt:
+                              description: YYYY-MM-DDTHH:mm:ss.sssZ
+                              type: string
+                              format: date-time
+                              externalDocs:
+                                url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
+                          required:
+                            - id
+                            - category
+                            - content
+                            - createdAt
+                            - updatedAt
+                    required:
+                      - posts
+                required:
+                  - status
+                  - data
+        "400":
+          description: GET /cms/posts Negative response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: error
+                  error:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                    required:
+                      - message
+                required:
+                  - status
+                  - error
+              examples:
+                example1:
+                  value:
+                    status: error
+                    error:
+                      message: Sample error message
+    post:
+      operationId: PostCmsPosts
+      tags: &a1
+        - posts
+      requestBody:
+        description: POST /cms/posts Request body
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                category:
+                  type: string
+                content:
+                  type: string
+              required:
+                - category
+                - content
+      responses:
+        "200":
+          description: POST /cms/posts Positive response 200
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: created
+                  data:
+                    type: object
+                    properties:
+                      post:
+                        type: object
+                        properties:
+                          id:
+                            type: number
+                            format: double
+                            minimum: -1.7976931348623157e+308
+                            maximum: 1.7976931348623157e+308
+                          category:
+                            type: string
+                          content:
+                            type: string
+                          createdAt:
+                            description: YYYY-MM-DDTHH:mm:ss.sssZ
+                            type: string
+                            format: date-time
+                            externalDocs:
+                              url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
+                          updatedAt:
+                            description: YYYY-MM-DDTHH:mm:ss.sssZ
+                            type: string
+                            format: date-time
+                            externalDocs:
+                              url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
+                        required:
+                          - id
+                          - category
+                          - content
+                          - createdAt
+                          - updatedAt
+                    required:
+                      - post
+                required:
+                  - status
+                  - data
+        "201":
+          description: POST /cms/posts Positive response 201
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: created
+                  data:
+                    type: object
+                    properties:
+                      post:
+                        type: object
+                        properties:
+                          id:
+                            type: number
+                            format: double
+                            minimum: -1.7976931348623157e+308
+                            maximum: 1.7976931348623157e+308
+                          category:
+                            type: string
+                          content:
+                            type: string
+                          createdAt:
+                            description: YYYY-MM-DDTHH:mm:ss.sssZ
+                            type: string
+                            format: date-time
+                            externalDocs:
+                              url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
+                          updatedAt:
+                            description: YYYY-MM-DDTHH:mm:ss.sssZ
+                            type: string
+                            format: date-time
+                            externalDocs:
+                              url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
+                        required:
+                          - id
+                          - category
+                          - content
+                          - createdAt
+                          - updatedAt
+                    required:
+                      - post
+                required:
+                  - status
+                  - data
+        "202":
+          description: POST /cms/posts Positive response 202
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: created
+                  data:
+                    type: object
+                    properties:
+                      post:
+                        type: object
+                        properties:
+                          id:
+                            type: number
+                            format: double
+                            minimum: -1.7976931348623157e+308
+                            maximum: 1.7976931348623157e+308
+                          category:
+                            type: string
+                          content:
+                            type: string
+                          createdAt:
+                            description: YYYY-MM-DDTHH:mm:ss.sssZ
+                            type: string
+                            format: date-time
+                            externalDocs:
+                              url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
+                          updatedAt:
+                            description: YYYY-MM-DDTHH:mm:ss.sssZ
+                            type: string
+                            format: date-time
+                            externalDocs:
+                              url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
+                        required:
+                          - id
+                          - category
+                          - content
+                          - createdAt
+                          - updatedAt
+                    required:
+                      - post
+                required:
+                  - status
+                  - data
+        "400":
+          description: POST /cms/posts Negative response 400
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: error
+                  reason:
+                    type: string
+                required:
+                  - status
+                  - reason
+        "409":
+          description: POST /cms/posts Negative response 409
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: exists
+                  id:
+                    type: integer
+                    format: int64
+                    minimum: -9007199254740991
+                    maximum: 9007199254740991
+                required:
+                  - status
+                  - id
+        "500":
+          description: POST /cms/posts Negative response 500
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: error
+                  reason:
+                    type: string
+                required:
+                  - status
+                  - reason
+  /cms/posts/{postId}:
+    post:
+      operationId: PostCmsPostsPostId
+      tags: *a1
+      requestBody:
+        description: POST /cms/posts/:postId Request body
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                category:
+                  type: string
+                content:
+                  type: string
+              required:
+                - category
+                - content
+      responses:
+        "200":
+          description: POST /cms/posts/:postId Positive response 200
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: created
+                  data:
+                    type: object
+                    properties:
+                      post:
+                        type: object
+                        properties:
+                          id:
+                            type: number
+                            format: double
+                            minimum: -1.7976931348623157e+308
+                            maximum: 1.7976931348623157e+308
+                          category:
+                            type: string
+                          content:
+                            type: string
+                          createdAt:
+                            description: YYYY-MM-DDTHH:mm:ss.sssZ
+                            type: string
+                            format: date-time
+                            externalDocs:
+                              url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
+                          updatedAt:
+                            description: YYYY-MM-DDTHH:mm:ss.sssZ
+                            type: string
+                            format: date-time
+                            externalDocs:
+                              url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
+                        required:
+                          - id
+                          - category
+                          - content
+                          - createdAt
+                          - updatedAt
+                    required:
+                      - post
+                required:
+                  - status
+                  - data
+        "201":
+          description: POST /cms/posts/:postId Positive response 201
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: created
+                  data:
+                    type: object
+                    properties:
+                      post:
+                        type: object
+                        properties:
+                          id:
+                            type: number
+                            format: double
+                            minimum: -1.7976931348623157e+308
+                            maximum: 1.7976931348623157e+308
+                          category:
+                            type: string
+                          content:
+                            type: string
+                          createdAt:
+                            description: YYYY-MM-DDTHH:mm:ss.sssZ
+                            type: string
+                            format: date-time
+                            externalDocs:
+                              url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
+                          updatedAt:
+                            description: YYYY-MM-DDTHH:mm:ss.sssZ
+                            type: string
+                            format: date-time
+                            externalDocs:
+                              url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
+                        required:
+                          - id
+                          - category
+                          - content
+                          - createdAt
+                          - updatedAt
+                    required:
+                      - post
+                required:
+                  - status
+                  - data
+        "202":
+          description: POST /cms/posts/:postId Positive response 202
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: created
+                  data:
+                    type: object
+                    properties:
+                      post:
+                        type: object
+                        properties:
+                          id:
+                            type: number
+                            format: double
+                            minimum: -1.7976931348623157e+308
+                            maximum: 1.7976931348623157e+308
+                          category:
+                            type: string
+                          content:
+                            type: string
+                          createdAt:
+                            description: YYYY-MM-DDTHH:mm:ss.sssZ
+                            type: string
+                            format: date-time
+                            externalDocs:
+                              url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
+                          updatedAt:
+                            description: YYYY-MM-DDTHH:mm:ss.sssZ
+                            type: string
+                            format: date-time
+                            externalDocs:
+                              url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
+                        required:
+                          - id
+                          - category
+                          - content
+                          - createdAt
+                          - updatedAt
+                    required:
+                      - post
+                required:
+                  - status
+                  - data
+        "400":
+          description: POST /cms/posts/:postId Negative response 400
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: error
+                  reason:
+                    type: string
+                required:
+                  - status
+                  - reason
+        "409":
+          description: POST /cms/posts/:postId Negative response 409
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: exists
+                  id:
+                    type: integer
+                    format: int64
+                    minimum: -9007199254740991
+                    maximum: 9007199254740991
+                required:
+                  - status
+                  - id
+        "500":
+          description: POST /cms/posts/:postId Negative response 500
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: error
+                  reason:
+                    type: string
+                required:
+                  - status
+                  - reason
+    get:
+      operationId: GetCmsPostsPostId
+      summary: Retrieves the post.
+      tags:
+        - posts
+      parameters:
+        - name: postId
+          in: path
+          required: true
+          description: A numeric string containing the id of the Post
+          schema:
+            type: string
+            pattern: \d+
+            description: A numeric string containing the id of the Post
+      responses:
+        "200":
+          description: GET /cms/posts/:postId Positive response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: success
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                        format: double
+                        minimum: -1.7976931348623157e+308
+                        maximum: 1.7976931348623157e+308
+                      category:
+                        type: string
+                      content:
+                        type: string
+                      createdAt:
+                        description: YYYY-MM-DDTHH:mm:ss.sssZ
+                        type: string
+                        format: date-time
+                        externalDocs:
+                          url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
+                      updatedAt:
+                        description: YYYY-MM-DDTHH:mm:ss.sssZ
+                        type: string
+                        format: date-time
+                        externalDocs:
+                          url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
+                    required:
+                      - id
+                      - category
+                      - content
+                      - createdAt
+                      - updatedAt
+                required:
+                  - status
+                  - data
+        "400":
+          description: GET /cms/posts/:postId Negative response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: error
+                  error:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                    required:
+                      - message
+                required:
+                  - status
+                  - error
+              examples:
+                example1:
+                  value:
+                    status: error
+                    error:
+                      message: Sample error message
+  /cms/health:
+    get:
+      operationId: GetCmsHealth
+      summary: Retrieves CMS health.
+      tags:
+        - content-management-system
+      responses:
+        "200":
+          description: GET /cms/health Positive response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: success
+                  data:
+                    type: object
+                    properties:
+                      receivedAt:
+                        description: YYYY-MM-DDTHH:mm:ss.sssZ
+                        type: string
+                        format: date-time
+                        externalDocs:
+                          url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
+                    required:
+                      - receivedAt
+                required:
+                  - status
+                  - data
+        "400":
+          description: GET /cms/health Negative response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: error
+                  error:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                    required:
+                      - message
+                required:
+                  - status
+                  - error
+              examples:
+                example1:
+                  value:
+                    status: error
+                    error:
+                      message: Sample error message
+components:
+  schemas: {}
+  responses: {}
+  parameters: {}
+  examples: {}
+  requestBodies: {}
+  headers: {}
+  securitySchemes: {}
+  links: {}
+  callbacks: {}
+tags: []
+servers:
+  - url: http://localhost:3000

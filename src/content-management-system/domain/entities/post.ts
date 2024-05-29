@@ -16,6 +16,16 @@ export class Post extends BaseEntity {
     this.updatedAt = this._theModel.updatedAt ?? new Date();
   }
 
+  public static new(category: string, content: string): Post {
+    return new Post({
+      id: 0,
+      category,
+      content,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+  }
+
   // INFO: Null object pattern
   public static empty(): Post {
     return new Post({
