@@ -7,13 +7,13 @@ export class Post extends BaseEntity {
   public readonly createdAt: Date;
   public readonly updatedAt: Date;
 
-  public constructor(private _theModel: ModelFromEntity<Post>) {
-    super(_theModel.id ?? 0);
+  public constructor(_theModel: ModelFromEntity<Post>) {
+    super(_theModel);
 
-    this.category = this._theModel.category;
-    this.content = this._theModel.content;
-    this.createdAt = this._theModel.createdAt ?? new Date();
-    this.updatedAt = this._theModel.updatedAt ?? new Date();
+    this.category = _theModel.category;
+    this.content = _theModel.content;
+    this.createdAt = _theModel.createdAt ?? new Date();
+    this.updatedAt = _theModel.updatedAt ?? new Date();
   }
 
   public static new(category: string, content: string): Post {

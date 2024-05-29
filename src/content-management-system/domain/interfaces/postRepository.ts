@@ -6,4 +6,6 @@ export interface PostRepository {
   findAll(userId: UserId): Promise<Either<Error, Post[]>>;
   findById(userId: UserId, postId: number): Promise<Either<Error, Post>>;
   create(userId: UserId, aPost: Post): Promise<void>;
+  update(userId: UserId, aPost: Post): Promise<void>;
+  removeByUser(userId: UserId): Promise<void>;
 }

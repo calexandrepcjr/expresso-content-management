@@ -19,11 +19,7 @@ export const statusDependingFactory = new EndpointsFactory({
   config,
   resultHandler: createResultHandler({
     getPositiveResponse: (output) => ({
-      statusCodes: [
-        HttpStatusCode.Created,
-        HttpStatusCode.Accepted,
-        HttpStatusCode.OK,
-      ],
+      statusCodes: [HttpStatusCode.Created, HttpStatusCode.Accepted],
       schema: z.object({ status: z.literal("created"), data: output }),
     }),
     getNegativeResponse: () => [
