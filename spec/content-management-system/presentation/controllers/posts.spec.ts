@@ -2,6 +2,7 @@ import request from "supertest";
 import { HttpStatusCode } from "@src/utils/httpStatusCode";
 import { InternetMediaType } from "@src/utils/internetMediaType";
 import { faker } from "@faker-js/faker";
+import { Config } from "@src/content-management-system/config/config";
 
 const localRequest = request("http://localhost:3000");
 
@@ -145,7 +146,7 @@ describe("[CMS] Posts", () => {
         };
 
         const response = await localRequest
-          .delete("/cms/posts")
+          .delete(`/cms/${Config.RootUserId}/posts`)
           .set("Content-Type", InternetMediaType.ApplicationJson)
           .set("Accept", InternetMediaType.ApplicationJson);
 
