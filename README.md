@@ -12,6 +12,10 @@ Guarantee you have installed both Docker and Docker Composer and run:
 
 `docker compose up`
 
+## How to see the endpoints
+
+The Swagger UI is at `http://localhost:3000/api-docs`
+
 ## Available Scripts
 
 ### `npm run dev`
