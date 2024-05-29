@@ -20,7 +20,7 @@ Run the server in development mode.
 
 ### `npm test`
 
-Run all tests.
+Run all tests - considering that express-zod-api does not offer any inversion of control regarding the Express App, for practical purposes we bounded the Supertest to `http://localhost:3000` - in this case, you need to run the container with `docker compose up` or the application locally with `npm run dev` prior running the tests for now.
 
 ### `npm test -- testfile`
 
@@ -30,6 +30,11 @@ Run a single test.
 
 Check for linting errors.
 
+### npm run build:docs
+
+Generates OpenAPI documentation. Executes automatically when executing `npm run dev`.
+
 ### `npm start`
 
 Run the production build
+
