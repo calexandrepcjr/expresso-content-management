@@ -1,32 +1,36 @@
 import request from "supertest";
-import app from "@src/app";
 import { HttpStatusCode } from "@src/utils/httpStatusCode";
 import { InternetMediaType } from "@src/utils/internetMediaType";
 import { faker } from "@faker-js/faker";
+
+const localRequest = request("http://localhost:3000");
 
 describe("[CMS] Posts", () => {
   describe("GET /cms/posts", () => {
     it("responds with all user posts", async () => {
       const expected = {
-        posts: [
-          {
-            id: 1,
-            category: "Nerdy stuff",
-            content: "Testing some nerdy stuff",
-            createdAt: expect.any(String),
-            updatedAt: expect.any(String),
-          },
-          {
-            id: 2,
-            category: "Career",
-            content: "A serious blog post regarding career",
-            createdAt: expect.any(String),
-            updatedAt: expect.any(String),
-          },
-        ],
+        status: "success",
+        data: {
+          posts: [
+            {
+              id: 1,
+              category: "Nerdy stuff",
+              content: "Testing some nerdy stuff",
+              createdAt: expect.any(String),
+              updatedAt: expect.any(String),
+            },
+            {
+              id: 2,
+              category: "Career",
+              content: "A serious blog post regarding career",
+              createdAt: expect.any(String),
+              updatedAt: expect.any(String),
+            },
+          ],
+        },
       };
 
-      const response = await request(app).get("/cms/posts");
+      const response = await localRequest.get("/cms/posts");
 
       expect(response.statusCode).toBe(HttpStatusCode.OK);
       expect(response.body).toBeInstanceOf(Object);
@@ -36,16 +40,21 @@ describe("[CMS] Posts", () => {
   describe("GET /cms/posts/:postId", () => {
     it("responds with a specific user post", async () => {
       const expected = {
-        post: {
-          id: 1,
-          category: "Nerdy stuff",
-          content: "Testing some nerdy stuff",
-          createdAt: expect.any(String),
-          updatedAt: expect.any(String),
+        status: "success",
+        data: {
+          post: {
+            id: 1,
+            category: "Nerdy stuff",
+            content: "Testing some nerdy stuff",
+            createdAt: expect.any(String),
+            updatedAt: expect.any(String),
+          },
         },
       };
 
-      const response = await request(app).get(`/cms/posts/${expected.post.id}`);
+      const response = await localRequest.get(
+        `/cms/posts/${expected.data.post.id}`,
+      );
 
       expect(response.statusCode).toBe(HttpStatusCode.OK);
       expect(response.body).toBeInstanceOf(Object);
@@ -53,34 +62,37 @@ describe("[CMS] Posts", () => {
     });
 
     it("fails with an NaN post id", async () => {
-      const response = await request(app).get("/cms/posts/theInvalidPostId");
+      const response = await localRequest.get("/cms/posts/theInvalidPostId");
 
-      expect(response.statusCode).toBe(HttpStatusCode.UnprocessableEntity);
+      expect(response.statusCode).toBe(HttpStatusCode.BadRequest);
     });
   });
   describe("POST /cms/posts", () => {
     it("creates a user post", async () => {
       const expected = {
-        post: {
-          id: 3,
-          category: faker.word.noun(),
-          content: faker.lorem.paragraphs(),
-          createdAt: expect.any(String),
-          updatedAt: expect.any(String),
+        status: "created",
+        data: {
+          post: {
+            id: 3,
+            category: faker.word.noun(),
+            content: faker.lorem.paragraphs(),
+            createdAt: expect.any(String),
+            updatedAt: expect.any(String),
+          },
         },
       };
       const payload = {
-        category: expected.post.category,
-        content: expected.post.content,
+        category: expected.data.post.category,
+        content: expected.data.post.content,
       };
 
-      const response = await request(app)
+      const response = await localRequest
         .post("/cms/posts")
         .send(payload)
         .set("Content-Type", InternetMediaType.ApplicationJson)
         .set("Accept", InternetMediaType.ApplicationJson);
 
-      expect(response.statusCode).toBe(HttpStatusCode.OK);
+      expect(response.statusCode).toBe(HttpStatusCode.Created);
       expect(response.body).toBeInstanceOf(Object);
       expect(response.body).toMatchObject(expected);
     });
