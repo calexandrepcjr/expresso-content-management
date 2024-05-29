@@ -8,6 +8,7 @@ import { either } from "fp-ts";
 import { Either } from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/function";
 import { BuiltinLogger } from "express-zod-api";
+import { User } from "@src/auth/domain/entities/user";
 
 const someRootUserPosts = new Map<PostId, Post>([
   [
@@ -125,13 +126,15 @@ export class PostRepository implements DomainPostRepository {
       ),
     );
   }
-  public async removeByUser(userId: string): Promise<void> {
+  public async removeByUser(user: User): Promise<void> {
     pipe(
-      PostRepository.storage.get(userId),
+      PostRepository.storage.get(user.externalId),
       either.fromNullable(new Error("User has no posts to remove")),
       either.match(
         (anError) => {
-          this.logger.error(anError.message, { userId });
+          this.logger.error(anError.message, { user });
+
+          user.invalidate(anError);
         },
         (userIdStorage) => {
           userIdStorage.clear();

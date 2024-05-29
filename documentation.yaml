@@ -113,6 +113,72 @@ paths:
                     status: error
                     error:
                       message: Sample error message
+  /cms/{userId}/posts:
+    delete:
+      operationId: DeleteCmsUserIdPosts
+      summary: Remove all user posts
+      tags:
+        - posts
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: An UUID representing the User
+          schema:
+            type: string
+            format: uuid
+            description: An UUID representing the User
+      responses:
+        "200":
+          description: DELETE /cms/:userId/posts Positive response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: success
+                  data:
+                    type: object
+                    properties:
+                      deletedAt:
+                        description: YYYY-MM-DDTHH:mm:ss.sssZ
+                        type: string
+                        format: date-time
+                        externalDocs:
+                          url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
+                    required:
+                      - deletedAt
+                required:
+                  - status
+                  - data
+        "400":
+          description: DELETE /cms/:userId/posts Negative response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: error
+                  error:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                    required:
+                      - message
+                required:
+                  - status
+                  - error
+              examples:
+                example1:
+                  value:
+                    status: error
+                    error:
+                      message: Sample error message
   /cms/posts:
     get:
       operationId: GetCmsPosts
@@ -613,6 +679,7 @@ paths:
                       message: Sample error message
     put:
       operationId: PutCmsPostsPostId
+      summary: Update whole Post content
       tags:
         - posts
       parameters:

@@ -15,6 +15,7 @@ const postsRepository = new PostRepository();
 export const updateWholePost = taggedEndpointsFactory.build({
   method: "put",
   tag: "posts",
+  shortDescription: "Update whole Post content",
   input: z.object({
     postId: z
       .string()
