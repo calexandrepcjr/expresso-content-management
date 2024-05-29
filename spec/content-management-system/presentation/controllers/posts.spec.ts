@@ -9,21 +9,37 @@ const localRequest = request("http://localhost:3000");
 describe("[CMS] Posts", () => {
   describe("GET /cms/posts", () => {
     it("responds with all user posts", async () => {
-      // TODO: Add delete call and recreate them considering the POST/PUT/PATCH calls
-
+      // INFO: Makes sure the test suite health considering the PUT/PATCH calls
+      // while we don't have auth to generate fake users bound by test suite executions
       const expected = {
+        status: "success",
+        data: {
+          deletedAt: expect.any(String),
+        },
+      };
+
+      const response = await localRequest
+        .delete(`/cms/${Config.RootUserId}/posts`)
+        .set("Content-Type", InternetMediaType.ApplicationJson)
+        .set("Accept", InternetMediaType.ApplicationJson);
+
+      expect(response.statusCode).toBe(HttpStatusCode.OK);
+      expect(response.body).toBeInstanceOf(Object);
+      expect(response.body).toMatchObject(expected);
+
+      const allPostsExpected = {
         status: "success",
         data: {
           posts: [
             {
-              id: 1,
+              id: expect.any(Number),
               category: "Nerdy stuff",
               content: "Testing some nerdy stuff",
               createdAt: expect.any(String),
               updatedAt: expect.any(String),
             },
             {
-              id: 2,
+              id: expect.any(Number),
               category: "Career",
               content: "A serious blog post regarding career",
               createdAt: expect.any(String),
@@ -33,22 +49,45 @@ describe("[CMS] Posts", () => {
         },
       };
 
-      const response = await localRequest.get("/cms/posts");
+      for (const post of allPostsExpected.data.posts) {
+        const payload = {
+          category: post.category,
+          content: post.content,
+        };
 
-      expect(response.statusCode).toBe(HttpStatusCode.OK);
-      expect(response.body).toBeInstanceOf(Object);
-      expect(response.body).toMatchObject(expected);
+        const response = await localRequest
+          .post("/cms/posts")
+          .send(payload)
+          .set("Content-Type", InternetMediaType.ApplicationJson)
+          .set("Accept", InternetMediaType.ApplicationJson);
+
+        expect(response.statusCode).toBe(HttpStatusCode.Created);
+        expect(response.body).toBeInstanceOf(Object);
+      }
+
+      const allPostsResponse = await localRequest.get("/cms/posts");
+
+      expect(allPostsResponse.statusCode).toBe(HttpStatusCode.OK);
+      expect(allPostsResponse.body).toBeInstanceOf(Object);
+      expect(allPostsResponse.body).toMatchObject(allPostsExpected);
     });
   });
   describe("GET /cms/posts/:postId", () => {
     it("responds with a specific user post", async () => {
+      const allPostsResponse = await localRequest.get("/cms/posts");
+
+      expect(allPostsResponse.statusCode).toBe(HttpStatusCode.OK);
+      expect(allPostsResponse.body).toBeInstanceOf(Object);
+
+      const expectedPost = allPostsResponse.body.data.posts.pop();
+
       const expected = {
         status: "success",
         data: {
           post: {
-            id: 1,
-            category: "Nerdy stuff",
-            content: "Testing some nerdy stuff",
+            id: expectedPost.id ?? 1,
+            category: expectedPost?.category ?? "Nerdy Stuff",
+            content: expectedPost?.content ?? "Testing some nerdy stuff",
             createdAt: expect.any(String),
             updatedAt: expect.any(String),
           },
@@ -102,8 +141,13 @@ describe("[CMS] Posts", () => {
   });
   describe("PUT /cms/posts/:postId", () => {
     it("updates a whole user post", async () => {
+      const allPostsResponse = await localRequest.get("/cms/posts");
+
+      expect(allPostsResponse.statusCode).toBe(HttpStatusCode.OK);
+      expect(allPostsResponse.body).toBeInstanceOf(Object);
+
       const expectedPost = {
-        id: 3,
+        id: allPostsResponse.body.data.posts.pop()?.id ?? 3,
         category: faker.word.noun(),
         content: faker.lorem.paragraphs(),
         createdAt: expect.any(String),
