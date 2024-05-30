@@ -8,7 +8,7 @@ const localRequest = request("http://localhost:3000");
 
 describe("[CMS] Posts", () => {
   describe("GET /cms/posts", () => {
-    it("responds with all user posts", async () => {
+    it("responds with all posts", async () => {
       // INFO: Makes sure the test suite health considering the PUT/PATCH calls
       // while we don't have auth to generate fake users bound by test suite executions
       const expected = {
@@ -19,7 +19,7 @@ describe("[CMS] Posts", () => {
       };
 
       const response = await localRequest
-        .delete(`/cms/${Config.RootUserId}/posts`)
+        .delete(`/cms/${Config.RootUserExternalId}/posts`)
         .set("Content-Type", InternetMediaType.ApplicationJson)
         .set("Accept", InternetMediaType.ApplicationJson);
 
@@ -56,7 +56,7 @@ describe("[CMS] Posts", () => {
         };
 
         const response = await localRequest
-          .post("/cms/posts")
+          .post(`/cms/${Config.RootUserExternalId}/posts`)
           .send(payload)
           .set("Content-Type", InternetMediaType.ApplicationJson)
           .set("Accept", InternetMediaType.ApplicationJson);
@@ -109,7 +109,7 @@ describe("[CMS] Posts", () => {
       expect(response.statusCode).toBe(HttpStatusCode.BadRequest);
     });
   });
-  describe("POST /cms/posts", () => {
+  describe("POST /cms/:userId/posts", () => {
     it("creates a user post", async () => {
       const expected = {
         status: "created",
@@ -129,7 +129,7 @@ describe("[CMS] Posts", () => {
       };
 
       const response = await localRequest
-        .post("/cms/posts")
+        .post(`/cms/${Config.RootUserExternalId}/posts`)
         .send(payload)
         .set("Content-Type", InternetMediaType.ApplicationJson)
         .set("Accept", InternetMediaType.ApplicationJson);
@@ -139,7 +139,7 @@ describe("[CMS] Posts", () => {
       expect(response.body).toMatchObject(expected);
     });
   });
-  describe("PUT /cms/posts/:postId", () => {
+  describe("PUT /cms/:userId/posts/:postId", () => {
     it("updates a whole user post", async () => {
       const allPostsResponse = await localRequest.get("/cms/posts");
 
@@ -162,7 +162,7 @@ describe("[CMS] Posts", () => {
       const payload = expectedPost;
 
       const response = await localRequest
-        .put(`/cms/posts/${expectedPost.id}`)
+        .put(`/cms/${Config.RootUserExternalId}/posts/${expectedPost.id}`)
         .send(payload)
         .set("Content-Type", InternetMediaType.ApplicationJson)
         .set("Accept", InternetMediaType.ApplicationJson);
@@ -180,7 +180,7 @@ describe("[CMS] Posts", () => {
       expect(getByIdResponse.body).toBeInstanceOf(Object);
       expect(getByIdResponse.body).toMatchObject(expected);
     });
-    describe("DELETE /cms/posts", () => {
+    describe("DELETE /cms/:userId/posts", () => {
       it("removes all user posts", async () => {
         const expected = {
           status: "success",
@@ -190,7 +190,7 @@ describe("[CMS] Posts", () => {
         };
 
         const response = await localRequest
-          .delete(`/cms/${Config.RootUserId}/posts`)
+          .delete(`/cms/${Config.RootUserExternalId}/posts`)
           .set("Content-Type", InternetMediaType.ApplicationJson)
           .set("Accept", InternetMediaType.ApplicationJson);
 
