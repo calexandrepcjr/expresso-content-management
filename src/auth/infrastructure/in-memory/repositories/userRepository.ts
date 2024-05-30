@@ -1,4 +1,3 @@
-import { UserId } from "@src/auth/domain/interfaces/userId";
 import { Config } from "@src/content-management-system/config/config";
 import { MutableRequired } from "@src/utils/mutableRequired";
 import { either } from "fp-ts";
@@ -8,16 +7,20 @@ import { BuiltinLogger } from "express-zod-api";
 import { UserRepository as DomainUserRepository } from "@src/auth/domain/interfaces/userRepository";
 import { randomUUID } from "crypto";
 import { User } from "@src/auth/domain/entities/user";
+import { UserExternalId } from "@src/auth/domain/interfaces/userExternalId";
 
 export class UserRepository implements DomainUserRepository {
-  private static readonly storage: Map<UserId, User> = new Map<UserId, User>([
+  private static readonly storage: Map<UserExternalId, User> = new Map<
+    UserExternalId,
+    User
+  >([
     [
-      Config.RootUserId,
+      Config.RootUserExternalId,
       new User({
         id: 1,
         fullName: "Root",
         email: "root@root.com",
-        externalId: Config.RootUserId,
+        externalId: Config.RootUserExternalId,
         createdAt: new Date(),
         updatedAt: new Date(),
       }),
@@ -41,7 +44,9 @@ export class UserRepository implements DomainUserRepository {
     return either.right([...(UserRepository.storage?.values() ?? [])]);
   }
 
-  public async findByExternalId(userId: UserId): Promise<Either<Error, User>> {
+  public async findByExternalId(
+    userId: UserExternalId,
+  ): Promise<Either<Error, User>> {
     return pipe(
       UserRepository.storage.get(userId),
       either.fromNullable(new Error("User Not Found")),
@@ -49,7 +54,7 @@ export class UserRepository implements DomainUserRepository {
   }
 
   public async create(
-    userId: UserId,
+    userId: UserExternalId,
     aUser: MutableRequired<User>,
   ): Promise<void> {
     const someUsers = UserRepository.storage.get(userId);

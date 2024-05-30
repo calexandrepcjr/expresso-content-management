@@ -7,6 +7,7 @@ import createHttpError from "http-errors";
 import { taggedEndpointsFactory } from "@src/utils/endpointFactories";
 import { ez } from "express-zod-api";
 import { UserRepository } from "@src/auth/infrastructure/in-memory/repositories/userRepository";
+import { UserExternalIdSchema } from "@src/auth/domain/entities/userExternalIdSchema";
 
 // TODO: Use DI
 const postsRepository = new PostRepository();
@@ -20,7 +21,7 @@ export const removeAllUserPosts = taggedEndpointsFactory.build({
   shortDescription: "Remove all user posts",
   input: z.object({
     // TODO: Replace by injecting user at runtime when applying Auth
-    userId: z.string().uuid().describe("An UUID representing the User"),
+    userId: UserExternalIdSchema,
   }),
   output: z.object({
     deletedAt: ez.dateOut(),

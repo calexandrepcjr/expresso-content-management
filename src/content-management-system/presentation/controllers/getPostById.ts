@@ -1,6 +1,5 @@
 import { HttpStatusCode } from "@src/utils/httpStatusCode";
 import { PostRepository } from "@src/content-management-system/infrastructure/in-memory/repositories/postRepository";
-import { Config } from "@src/content-management-system/config/config";
 import { pipe } from "fp-ts/lib/function";
 import { either } from "fp-ts";
 import { z } from "zod";
@@ -33,7 +32,7 @@ export const getPostById = taggedEndpointsFactory.build({
     }),
   }),
   handler: async ({ input: { postId } }) => {
-    const maybePost = await postsRepository.findById(Config.RootUserId, postId);
+    const maybePost = await postsRepository.findById(postId);
 
     return pipe(
       maybePost,

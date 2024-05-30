@@ -1,9 +1,10 @@
 import { BaseEntity } from "@src/utils/baseEntity";
 import { ModelFromEntity } from "@src/utils/modelFromEntity";
 import { randomUUID } from "crypto";
+import { UserExternalId } from "@src/auth/domain/interfaces/userExternalId";
 
 export class User extends BaseEntity {
-  public readonly externalId: string;
+  public readonly externalId: UserExternalId;
   public readonly fullName: string;
   public readonly email: string;
   public readonly createdAt: Date;

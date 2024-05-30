@@ -29,7 +29,7 @@ export const getPosts = taggedEndpointsFactory.build({
   }),
   handler: async () => {
     //TODO: Apply Use Cases, keep Exceptions at presentation layer
-    const maybePosts = await postsRepository.findAll(Config.RootUserId);
+    const maybePosts = await postsRepository.findAll(Config.RootUserExternalId);
 
     return pipe(
       maybePosts,

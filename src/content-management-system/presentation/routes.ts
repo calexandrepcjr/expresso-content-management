@@ -11,9 +11,15 @@ export const routes: Routing = {
   cms: {
     "": getRoot,
     ":userId": {
-      posts: new DependsOnMethod({
-        delete: removeAllUserPosts,
-      }),
+      posts: {
+        "": new DependsOnMethod({
+          delete: removeAllUserPosts,
+          post: createPost,
+        }),
+        ":postId": new DependsOnMethod({
+          put: updateWholePost,
+        }),
+      },
     },
     posts: {
       "": new DependsOnMethod({
@@ -21,9 +27,7 @@ export const routes: Routing = {
         post: createPost,
       }),
       ":postId": new DependsOnMethod({
-        post: createPost,
         get: getPostById,
-        put: updateWholePost,
       }),
     },
     health: getHealth,

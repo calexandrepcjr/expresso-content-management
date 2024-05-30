@@ -1,4 +1,3 @@
-import { UserId } from "@src/auth/domain/interfaces/userId";
 import { PostId } from "@src/content-management-system/domain/interfaces/postId";
 import { Config } from "@src/content-management-system/config/config";
 import { Post } from "@src/content-management-system/domain/entities/post";
@@ -9,6 +8,7 @@ import { Either } from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/function";
 import { BuiltinLogger } from "express-zod-api";
 import { User } from "@src/auth/domain/entities/user";
+import { UserExternalId } from "@src/auth/domain/interfaces/userExternalId";
 
 const someRootUserPosts = new Map<PostId, Post>([
   [
@@ -17,6 +17,7 @@ const someRootUserPosts = new Map<PostId, Post>([
       id: 1,
       category: "Nerdy stuff",
       content: "Testing some nerdy stuff",
+      author: 1,
       createdAt: new Date(),
       updatedAt: new Date(),
     }),
@@ -27,6 +28,7 @@ const someRootUserPosts = new Map<PostId, Post>([
       id: 2,
       category: "Career",
       content: "A serious blog post regarding career",
+      author: 1,
       createdAt: new Date(),
       updatedAt: new Date(),
     }),
@@ -34,10 +36,10 @@ const someRootUserPosts = new Map<PostId, Post>([
 ]);
 
 export class PostRepository implements DomainPostRepository {
-  private static readonly storage: Map<UserId, Map<PostId, Post>> = new Map<
-    UserId,
-    Map<PostId, Post>
-  >([[Config.RootUserId, someRootUserPosts]]);
+  private static readonly storage: Map<UserExternalId, Map<PostId, Post>> =
+    new Map<UserExternalId, Map<PostId, Post>>([
+      [Config.RootUserExternalId, someRootUserPosts],
+    ]);
   private static lastId: PostId = 2;
   private readonly logger: BuiltinLogger;
 
@@ -52,27 +54,23 @@ export class PostRepository implements DomainPostRepository {
       });
   }
 
-  public async findAll(userId: UserId): Promise<Either<Error, Post[]>> {
+  public async findAll(userId: UserExternalId): Promise<Either<Error, Post[]>> {
     return either.right([
       ...(PostRepository.storage.get(userId)?.values() ?? []),
     ]);
   }
 
-  public async findById(
-    userId: UserId,
-    postId: number,
-  ): Promise<Either<Error, Post>> {
+  public async findById(postId: number): Promise<Either<Error, Post>> {
     return pipe(
-      PostRepository.storage.get(userId)?.get(postId),
+      [...PostRepository.storage.values()]
+        ?.find((posts) => posts.has(postId))
+        ?.get(postId),
       either.fromNullable(new Error("Post Not Found")),
     );
   }
 
-  public async create(
-    userId: UserId,
-    aPost: MutableRequired<Post>,
-  ): Promise<void> {
-    const someUserPosts = PostRepository.storage.get(userId);
+  public async create(user: User, aPost: MutableRequired<Post>): Promise<void> {
+    const someUserPosts = PostRepository.storage.get(user.externalId);
 
     if (!someUserPosts) {
       const aNewPost = new Post({
@@ -82,7 +80,7 @@ export class PostRepository implements DomainPostRepository {
       aPost.id = aNewPost.id;
 
       PostRepository.storage.set(
-        userId,
+        user.externalId,
         new Map<PostId, Post>([[aNewPost.id, aNewPost]]),
       );
 
