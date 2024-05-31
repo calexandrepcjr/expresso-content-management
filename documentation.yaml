@@ -232,6 +232,11 @@ paths:
                             type: string
                           content:
                             type: string
+                          authorId:
+                            type: number
+                            format: double
+                            minimum: -1.7976931348623157e+308
+                            maximum: 1.7976931348623157e+308
                           createdAt:
                             description: YYYY-MM-DDTHH:mm:ss.sssZ
                             type: string
@@ -248,6 +253,7 @@ paths:
                           - id
                           - category
                           - content
+                          - authorId
                           - createdAt
                           - updatedAt
                     required:
@@ -280,6 +286,11 @@ paths:
                             type: string
                           content:
                             type: string
+                          authorId:
+                            type: number
+                            format: double
+                            minimum: -1.7976931348623157e+308
+                            maximum: 1.7976931348623157e+308
                           createdAt:
                             description: YYYY-MM-DDTHH:mm:ss.sssZ
                             type: string
@@ -296,6 +307,7 @@ paths:
                           - id
                           - category
                           - content
+                          - authorId
                           - createdAt
                           - updatedAt
                     required:
@@ -414,6 +426,11 @@ paths:
                             type: string
                           content:
                             type: string
+                          authorId:
+                            type: number
+                            format: double
+                            minimum: -1.7976931348623157e+308
+                            maximum: 1.7976931348623157e+308
                           createdAt:
                             description: YYYY-MM-DDTHH:mm:ss.sssZ
                             type: string
@@ -430,6 +447,7 @@ paths:
                           - id
                           - category
                           - content
+                          - authorId
                           - createdAt
                           - updatedAt
                     required:
@@ -597,6 +615,11 @@ paths:
                             type: string
                           content:
                             type: string
+                          authorId:
+                            type: number
+                            format: double
+                            minimum: -1.7976931348623157e+308
+                            maximum: 1.7976931348623157e+308
                           createdAt:
                             description: YYYY-MM-DDTHH:mm:ss.sssZ
                             type: string
@@ -613,6 +636,7 @@ paths:
                           - id
                           - category
                           - content
+                          - authorId
                           - createdAt
                           - updatedAt
                     required:
@@ -645,6 +669,11 @@ paths:
                             type: string
                           content:
                             type: string
+                          authorId:
+                            type: number
+                            format: double
+                            minimum: -1.7976931348623157e+308
+                            maximum: 1.7976931348623157e+308
                           createdAt:
                             description: YYYY-MM-DDTHH:mm:ss.sssZ
                             type: string
@@ -661,6 +690,7 @@ paths:
                           - id
                           - category
                           - content
+                          - authorId
                           - createdAt
                           - updatedAt
                     required:

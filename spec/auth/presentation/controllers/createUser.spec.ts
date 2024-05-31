@@ -5,7 +5,7 @@ import { InternetMediaType } from "@src/utils/internetMediaType";
 
 const localRequest = request("http://localhost:3000");
 
-describe("[CMS] Posts", () => {
+describe("[Auth] Users", () => {
   describe("POST /auth/users", () => {
     it("creates a user", async () => {
       const expected = {
