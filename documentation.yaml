@@ -193,6 +193,79 @@ paths:
                 required:
                   - status
                   - reason
+  /auth/users/login:
+    get:
+      operationId: GetAuthUsersLogin
+      tags:
+        - auth
+      parameters:
+        - name: email
+          in: query
+          required: true
+          description: GET /auth/users/login Parameter
+          schema:
+            type: string
+            format: email
+            minLength: 1
+        - name: password
+          in: query
+          required: true
+          description: GET /auth/users/login Parameter
+          schema:
+            type: string
+            minLength: 4
+      responses:
+        "200":
+          description: GET /auth/users/login Positive response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: success
+                  data:
+                    type: object
+                    properties:
+                      externalId:
+                        type: string
+                        format: uuid
+                      token:
+                        type: string
+                        minLength: 1
+                    required:
+                      - externalId
+                      - token
+                required:
+                  - status
+                  - data
+        "400":
+          description: GET /auth/users/login Negative response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: error
+                  error:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                    required:
+                      - message
+                required:
+                  - status
+                  - error
+              examples:
+                example1:
+                  value:
+                    status: error
+                    error:
+                      message: Sample error message
   /cms:
     get:
       operationId: GetCms

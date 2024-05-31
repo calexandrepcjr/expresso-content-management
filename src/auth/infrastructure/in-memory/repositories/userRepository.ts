@@ -8,6 +8,7 @@ import { UserRepository as DomainUserRepository } from "@src/auth/domain/interfa
 import { randomUUID } from "crypto";
 import { User } from "@src/auth/domain/entities/user";
 import { UserExternalId } from "@src/auth/domain/interfaces/userExternalId";
+import { Password } from "@src/auth/domain/value-objects/password";
 
 export class UserRepository implements DomainUserRepository {
   private static readonly storage: Map<UserExternalId, User> = new Map<
@@ -20,7 +21,7 @@ export class UserRepository implements DomainUserRepository {
         id: 1,
         fullName: "Root",
         email: "root@root.com",
-        password: process.env["ROOT_PASSWORD"] ?? "1234",
+        password: new Password(process.env["ROOT_PASSWORD"] ?? "1234"),
         externalId: Config.RootUserExternalId,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -29,6 +30,10 @@ export class UserRepository implements DomainUserRepository {
   ]);
   private static readonly storageIndexById: Map<number, UserExternalId> =
     new Map<number, UserExternalId>([[1, Config.RootUserExternalId]]);
+  private static readonly storageIndexByEmail: Map<string, UserExternalId> =
+    new Map<string, UserExternalId>([
+      ["root@root.com", Config.RootUserExternalId],
+    ]);
   private static lastId: number = 1;
   private readonly logger: BuiltinLogger;
 
@@ -56,20 +61,30 @@ export class UserRepository implements DomainUserRepository {
     );
   }
 
+  public async findByEmail(email: string): Promise<Either<Error, User>> {
+    return pipe(
+      UserRepository.storage.get(
+        UserRepository.storageIndexByEmail.get(email) ?? "",
+      ),
+      either.fromNullable(new Error("User Not Found")),
+    );
+  }
+
   public async create(aUser: MutableRequired<User>): Promise<void> {
     const someUsers = UserRepository.storage.get(aUser.externalId);
 
     if (!someUsers) {
       UserRepository.lastId = 1;
 
+      await aUser.password.generate();
+
       const aNewUser = new User({
         ...aUser,
-        externalId: randomUUID(),
         id: UserRepository.lastId,
       });
       aUser.id = aNewUser.id;
 
-      UserRepository.storage.set(aNewUser.externalId, aNewUser);
+      this.syncStorage(aNewUser);
 
       return;
     }
@@ -83,8 +98,7 @@ export class UserRepository implements DomainUserRepository {
     });
     aUser.id = aNewUser.id;
 
-    UserRepository.storage.set(aNewUser.externalId, aNewUser);
-    UserRepository.storageIndexById.set(aNewUser.id, aNewUser.externalId);
+    this.syncStorage(aNewUser);
   }
 
   public async update(aUser: User): Promise<void> {
@@ -105,7 +119,7 @@ export class UserRepository implements DomainUserRepository {
             updatedAt: new Date(),
           });
 
-          UserRepository.storage.set(aUser.externalId, aNewUser);
+          this.syncStorage(aNewUser);
         },
       ),
     );
@@ -121,8 +135,9 @@ export class UserRepository implements DomainUserRepository {
           user.invalidate(anError);
         },
         (aLoadedUser) => {
-          UserRepository.storage.delete(aLoadedUser.externalId);
-          UserRepository.storageIndexById.delete(aLoadedUser.id);
+          aLoadedUser.invalidate(new Error("Removed"));
+
+          this.syncStorage(aLoadedUser);
         },
       ),
     );
@@ -152,5 +167,19 @@ export class UserRepository implements DomainUserRepository {
     }
 
     return either.right(groupByIds);
+  }
+
+  private syncStorage(user: User): void {
+    if (user.isPersisted() && user.isValid()) {
+      UserRepository.storage.set(user.externalId, user);
+      UserRepository.storageIndexById.set(user.id, user.externalId);
+      UserRepository.storageIndexByEmail.set(user.email, user.externalId);
+
+      return;
+    }
+
+    UserRepository.storage.delete(user.externalId);
+    UserRepository.storageIndexById.delete(user.id);
+    UserRepository.storageIndexByEmail.delete(user.email);
   }
 }
