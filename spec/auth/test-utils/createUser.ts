@@ -3,7 +3,7 @@ import { HttpStatusCode } from "@src/utils/httpStatusCode";
 import { InternetMediaType } from "@src/utils/internetMediaType";
 import { localRequest } from "./localRequest";
 
-interface CreateUserSpec {
+export interface CreateUserSpec {
   payload: {
     fullName: string;
     email: string;

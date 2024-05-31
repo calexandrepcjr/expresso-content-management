@@ -1,12 +1,25 @@
 import request from "supertest";
 import { HttpStatusCode } from "@src/utils/httpStatusCode";
 import { InternetMediaType } from "@src/utils/internetMediaType";
-import { Config } from "@src/content-management-system/config/config";
+import {
+  CreateUserSpec,
+  createUser,
+} from "../../../auth/test-utils/createUser";
+import { createPost } from "../../../auth/test-utils/createPost";
+import { PostResponse } from "@src/content-management-system/presentation/messages/postResponse";
 
 const localRequest = request("http://localhost:3000");
 
 describe("[CMS] Posts", () => {
-  describe("DELETE /cms/:userId/posts", () => {
+  describe("DELETE /cms/posts", () => {
+    let user: CreateUserSpec;
+
+    beforeAll(async () => {
+      user = await createUser();
+
+      await createPost(user);
+    });
+
     afterAll(async () => {
       const posts = [
         {
@@ -29,13 +42,15 @@ describe("[CMS] Posts", () => {
 
       for (const post of posts) {
         const payload = {
+          externalId: user.result.externalId,
           category: post.category,
           content: post.content,
         };
 
         const response = await localRequest
-          .post(`/cms/${Config.RootUserExternalId}/posts`)
+          .post("/cms/posts")
           .send(payload)
+          .set("authorization", user.result.token)
           .set("Content-Type", InternetMediaType.ApplicationJson)
           .set("Accept", InternetMediaType.ApplicationJson);
 
@@ -53,7 +68,11 @@ describe("[CMS] Posts", () => {
       };
 
       const response = await localRequest
-        .delete(`/cms/${Config.RootUserExternalId}/posts`)
+        .delete("/cms/posts")
+        .send({
+          externalId: user.result.externalId,
+        })
+        .set("authorization", user.result.token)
         .set("Content-Type", InternetMediaType.ApplicationJson)
         .set("Accept", InternetMediaType.ApplicationJson);
 
@@ -61,18 +80,16 @@ describe("[CMS] Posts", () => {
       expect(response.body).toBeInstanceOf(Object);
       expect(response.body).toMatchObject(expected);
 
-      const getAllExpected = {
-        status: "success",
-        data: {
-          posts: [],
-        },
-      };
-
       const getAllResponse = await localRequest.get("/cms/posts");
 
       expect(getAllResponse.statusCode).toBe(HttpStatusCode.OK);
       expect(getAllResponse.body).toBeInstanceOf(Object);
-      expect(getAllResponse.body).toMatchObject(getAllExpected);
+
+      expect(
+        getAllResponse.body.data.posts.filter(
+          (post: PostResponse) => post.author === user.payload.fullName,
+        ),
+      ).toHaveLength(0);
     });
   });
 });

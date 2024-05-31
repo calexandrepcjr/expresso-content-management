@@ -3,6 +3,7 @@ import { HttpStatusCode } from "@src/utils/httpStatusCode";
 import { faker } from "@faker-js/faker";
 import { InternetMediaType } from "@src/utils/internetMediaType";
 import { createUser } from "../../../auth/test-utils/createUser";
+import { createPost } from "../../../auth/test-utils/createPost";
 
 const localRequest = request("http://localhost:3000");
 
@@ -11,35 +12,7 @@ describe("[CMS] Posts", () => {
     it("creates a user post", async () => {
       const user = await createUser();
 
-      const expected = {
-        status: "created",
-        data: {
-          post: {
-            id: expect.any(Number),
-            category: faker.word.noun(),
-            content: faker.lorem.paragraphs(),
-            authorId: 1,
-            createdAt: expect.any(String),
-            updatedAt: expect.any(String),
-          },
-        },
-      };
-      const payload = {
-        externalId: user.result.externalId,
-        category: expected.data.post.category,
-        content: expected.data.post.content,
-      };
-
-      const response = await localRequest
-        .post("/cms/posts")
-        .send(payload)
-        .set("authorization", user.result.token)
-        .set("Content-Type", InternetMediaType.ApplicationJson)
-        .set("Accept", InternetMediaType.ApplicationJson);
-
-      expect(response.statusCode).toBe(HttpStatusCode.Created);
-      expect(response.body).toBeInstanceOf(Object);
-      expect(response.body).toMatchObject(expected);
+      await createPost(user);
     });
 
     it("fails to create a user post when user does not exist", async () => {
