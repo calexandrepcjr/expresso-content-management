@@ -13,7 +13,7 @@
     "start": "tsx --env-file=.env dist/httpServer",
     "predev": "npm run build:docs",
     "dev": "tsc --noEmit && tsx watch --env-file=.env.local --require tsconfig-paths/register src/httpServer",
-    "test": "dotenvx run --env-file=.env.local -- jest",
+    "test": "dotenvx run --env-file=.env.local -- jest --runInBand",
     "lint": "eslint . --ext .ts --fix",
     "build:docs": "tsx --env-file=.env.local --require tsconfig-paths/register src/generateDocumentation"
   },
