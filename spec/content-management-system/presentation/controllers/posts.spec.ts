@@ -35,6 +35,7 @@ describe("[CMS] Posts", () => {
               id: expect.any(Number),
               category: "Nerdy stuff",
               content: "Testing some nerdy stuff",
+              author: "Root",
               createdAt: expect.any(String),
               updatedAt: expect.any(String),
             },
@@ -42,6 +43,7 @@ describe("[CMS] Posts", () => {
               id: expect.any(Number),
               category: "Career",
               content: "A serious blog post regarding career",
+              author: "Root",
               createdAt: expect.any(String),
               updatedAt: expect.any(String),
             },
@@ -88,6 +90,7 @@ describe("[CMS] Posts", () => {
             id: expectedPost.id ?? 1,
             category: expectedPost?.category ?? "Nerdy Stuff",
             content: expectedPost?.content ?? "Testing some nerdy stuff",
+            author: "Root",
             createdAt: expect.any(String),
             updatedAt: expect.any(String),
           },
@@ -118,6 +121,7 @@ describe("[CMS] Posts", () => {
             id: expect.any(Number),
             category: faker.word.noun(),
             content: faker.lorem.paragraphs(),
+            authorId: 1,
             createdAt: expect.any(String),
             updatedAt: expect.any(String),
           },
@@ -146,10 +150,13 @@ describe("[CMS] Posts", () => {
       expect(allPostsResponse.statusCode).toBe(HttpStatusCode.OK);
       expect(allPostsResponse.body).toBeInstanceOf(Object);
 
+      const post = allPostsResponse.body.data.posts.pop();
+
       const expectedPost = {
-        id: allPostsResponse.body.data.posts.pop()?.id ?? 3,
+        id: post?.id ?? 3,
         category: faker.word.noun(),
         content: faker.lorem.paragraphs(),
+        authorId: 1,
         createdAt: expect.any(String),
         updatedAt: expect.any(String),
       };
@@ -178,7 +185,16 @@ describe("[CMS] Posts", () => {
 
       expect(getByIdResponse.statusCode).toBe(HttpStatusCode.OK);
       expect(getByIdResponse.body).toBeInstanceOf(Object);
-      expect(getByIdResponse.body).toMatchObject(expected);
+      expect(getByIdResponse.body).toEqual({
+        ...expected,
+        data: {
+          post: {
+            ...expectedPost,
+            authorId: undefined,
+            author: "Root",
+          },
+        },
+      });
     });
     describe("DELETE /cms/:userId/posts", () => {
       it("removes all user posts", async () => {
