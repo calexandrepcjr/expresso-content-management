@@ -27,11 +27,15 @@ describe("[CMS] Posts", () => {
           post: expectedPost,
         },
       };
-      const payload = expectedPost;
+      const payload = {
+        ...expectedPost,
+        externalId: user.result.externalId,
+      };
 
       const response = await localRequest
-        .put(`/cms/${user.result.externalId}/posts/${expectedPost.id}`)
+        .put(`/cms/posts/${expectedPost.id}`)
         .send(payload)
+        .set("authorization", user.result.token)
         .set("Content-Type", InternetMediaType.ApplicationJson)
         .set("Accept", InternetMediaType.ApplicationJson);
 
