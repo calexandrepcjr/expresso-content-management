@@ -22,6 +22,13 @@ export const config = createConfig({
       app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(documentation));
     },
   },
+  inputSources: {
+    get: ["query", "params"],
+    post: ["body", "params", "files"],
+    put: ["body", "params"],
+    patch: ["body", "params"],
+    delete: ["query", "params", "body"],
+  },
   cors: false,
   logger: {
     level: "debug",

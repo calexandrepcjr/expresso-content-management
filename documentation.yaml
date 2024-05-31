@@ -328,72 +328,6 @@ paths:
                     status: error
                     error:
                       message: Sample error message
-  /cms/{userId}/posts:
-    delete:
-      operationId: DeleteCmsUserIdPosts
-      summary: Remove all user posts
-      tags:
-        - posts
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          description: An UUID representing the User
-          schema:
-            type: string
-            format: uuid
-            description: An UUID representing the User
-      responses:
-        "200":
-          description: DELETE /cms/:userId/posts Positive response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    const: success
-                  data:
-                    type: object
-                    properties:
-                      deletedAt:
-                        description: YYYY-MM-DDTHH:mm:ss.sssZ
-                        type: string
-                        format: date-time
-                        externalDocs:
-                          url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
-                    required:
-                      - deletedAt
-                required:
-                  - status
-                  - data
-        "400":
-          description: DELETE /cms/:userId/posts Negative response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    const: error
-                  error:
-                    type: object
-                    properties:
-                      message:
-                        type: string
-                    required:
-                      - message
-                required:
-                  - status
-                  - error
-              examples:
-                example1:
-                  value:
-                    status: error
-                    error:
-                      message: Sample error message
   /cms/{userId}/posts/{postId}:
     put:
       operationId: PutCmsUserIdPostsPostId
@@ -781,6 +715,81 @@ paths:
                 required:
                   - status
                   - reason
+    delete:
+      operationId: DeleteCmsPosts
+      summary: Remove all user posts
+      tags:
+        - posts
+      parameters:
+        - name: externalId
+          in: query
+          required: true
+          description: DELETE /cms/posts Parameter
+          schema:
+            type: string
+            minLength: 1
+      requestBody:
+        description: DELETE /cms/posts Request body
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
+              required: []
+      security:
+        - APIKEY_3: []
+          APIKEY_2: []
+      responses:
+        "200":
+          description: DELETE /cms/posts Positive response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: success
+                  data:
+                    type: object
+                    properties:
+                      deletedAt:
+                        description: YYYY-MM-DDTHH:mm:ss.sssZ
+                        type: string
+                        format: date-time
+                        externalDocs:
+                          url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
+                    required:
+                      - deletedAt
+                required:
+                  - status
+                  - data
+        "400":
+          description: DELETE /cms/posts Negative response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: error
+                  error:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                    required:
+                      - message
+                required:
+                  - status
+                  - error
+              examples:
+                example1:
+                  value:
+                    status: error
+                    error:
+                      message: Sample error message
   /cms/posts/{postId}:
     get:
       operationId: GetCmsPostsPostId
@@ -949,6 +958,12 @@ components:
       type: apiKey
       in: header
       name: authorization
+    APIKEY_3:
+      type: apiKey
+      in: query
+      name: externalId
+      x-in-alternative: body
+      description: externalId CAN also be supplied within the request body
   links: {}
   callbacks: {}
 tags: []

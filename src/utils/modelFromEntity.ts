@@ -4,5 +4,10 @@ import { InfrastructureModel } from "./infrastructureModel";
 export type ModelFromEntity<T extends BaseEntity> = InfrastructureModel &
   Omit<
     T,
-    "theModel" | "isPersisted" | "invalidationReason" | "isValid" | "invalidate"
+    | "theModel"
+    | "isPersisted"
+    | "invalidationReason"
+    | "isValid"
+    | "invalidate"
+    | "toJSON"
   >;

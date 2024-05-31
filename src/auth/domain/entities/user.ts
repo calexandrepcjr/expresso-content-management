@@ -52,4 +52,11 @@ export class User extends BaseEntity {
       updatedAt: new Date(),
     });
   }
+
+  public toJSON(): object {
+    return {
+      ...this,
+      password: undefined,
+    };
+  }
 }

@@ -1,6 +1,5 @@
 import { HttpStatusCode } from "@src/utils/httpStatusCode";
 import { PostRepository } from "@src/content-management-system/infrastructure/in-memory/repositories/postRepository";
-import { Config } from "@src/content-management-system/config/config";
 import { pipe } from "fp-ts/lib/function";
 import { taskEither } from "fp-ts";
 import { z } from "zod";
@@ -34,7 +33,7 @@ export const getPosts = taggedEndpointsFactory.build({
   }),
   handler: async () => {
     //TODO: Apply Use Cases, keep Exceptions at presentation layer
-    const maybePosts = await postsRepository.findAll(Config.RootUserExternalId);
+    const maybePosts = await postsRepository.findAll();
 
     return pipe(
       taskEither.fromEither(maybePosts),

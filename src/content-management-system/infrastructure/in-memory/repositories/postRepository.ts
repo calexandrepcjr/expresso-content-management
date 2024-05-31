@@ -54,10 +54,13 @@ export class PostRepository implements DomainPostRepository {
       });
   }
 
-  public async findAll(userId: UserExternalId): Promise<Either<Error, Post[]>> {
-    return either.right([
-      ...(PostRepository.storage.get(userId)?.values() ?? []),
-    ]);
+  public async findAll(): Promise<Either<Error, Post[]>> {
+    // TODO: Replace by a more robust solution considering the time complexity
+    return either.right(
+      [...(PostRepository.storage?.values() ?? [])].flatMap((postsStorage) => [
+        ...postsStorage.values(),
+      ]),
+    );
   }
 
   public async findById(postId: number): Promise<Either<Error, Post>> {
@@ -125,6 +128,11 @@ export class PostRepository implements DomainPostRepository {
     );
   }
   public async removeByUser(user: User): Promise<void> {
+    this.logger.debug("Removing all posts from User", {
+      user,
+      posts: PostRepository.storage.get(user.externalId),
+    });
+
     pipe(
       PostRepository.storage.get(user.externalId),
       either.fromNullable(new Error("User has no posts to remove")),
