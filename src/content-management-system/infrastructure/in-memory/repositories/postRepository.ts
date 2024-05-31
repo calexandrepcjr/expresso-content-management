@@ -75,10 +75,12 @@ export class PostRepository implements DomainPostRepository {
   public async create(user: User, aPost: MutableRequired<Post>): Promise<void> {
     const someUserPosts = PostRepository.storage.get(user.externalId);
 
+    PostRepository.lastId += 1;
+
     if (!someUserPosts) {
       const aNewPost = new Post({
         ...aPost,
-        id: 1,
+        id: PostRepository.lastId,
       });
       aPost.id = aNewPost.id;
 
@@ -91,8 +93,6 @@ export class PostRepository implements DomainPostRepository {
 
       return;
     }
-
-    PostRepository.lastId += 1;
 
     const aNewPost = new Post({
       ...aPost,

@@ -1,7 +1,7 @@
 import { ModelFromEntity } from "./modelFromEntity";
 
 export abstract class BaseEntity {
-  private _invalidationReason?: Error;
+  private _invalidationReason?: Error | undefined;
   public readonly id: number;
 
   public constructor(aModel: ModelFromEntity<BaseEntity>) {
@@ -18,7 +18,12 @@ export abstract class BaseEntity {
 
   // INFO: No monads/optionals here: consider calling isValid at first for now
   public invalidationReason(): Error {
-    return this._invalidationReason ?? new Error("");
+    const reason = this._invalidationReason ?? new Error("");
+
+    // TODO: Remove when replacing js in-memory usage
+    this._invalidationReason = undefined;
+
+    return reason;
   }
 
   public isPersisted(): boolean {

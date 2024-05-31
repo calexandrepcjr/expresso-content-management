@@ -10,13 +10,6 @@ import { removeAllUserPosts } from "@src/content-management-system/presentation/
 export const routes: Routing = {
   cms: {
     "": getRoot,
-    ":userId": {
-      posts: {
-        ":postId": new DependsOnMethod({
-          put: updateWholePost,
-        }),
-      },
-    },
     posts: {
       "": new DependsOnMethod({
         get: getPosts,
@@ -25,6 +18,7 @@ export const routes: Routing = {
       }),
       ":postId": new DependsOnMethod({
         get: getPostById,
+        put: updateWholePost,
       }),
     },
     health: getHealth,
