@@ -6,7 +6,7 @@ import { z } from "zod";
 import createHttpError from "http-errors";
 import { taggedEndpointsFactory } from "@src/utils/endpointFactories";
 import { ez } from "express-zod-api";
-import { PostResponse } from "../postResponse";
+import { PostResponse } from "@src/content-management-system/presentation/messages/postResponse";
 import { UserRepository } from "@src/auth/infrastructure/in-memory/repositories/userRepository";
 
 // TODO: Use DI

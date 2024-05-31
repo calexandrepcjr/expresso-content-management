@@ -1,4 +1,5 @@
 import { routes as cmsRoutes } from "@src/content-management-system/presentation/routes";
+import { routes as authRoutes } from "@src/auth/presentation/routes";
 import { defaultEndpointsFactory } from "express-zod-api";
 import { z } from "zod";
 
@@ -21,5 +22,6 @@ export const routes = {
       };
     },
   }),
+  ...authRoutes,
   ...cmsRoutes,
 };

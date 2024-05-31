@@ -8,4 +8,5 @@ export interface UserRepository {
     userExternalId: UserExternalId,
   ): Promise<Either<Error, User>>;
   findById(userId: number): Promise<Either<Error, User>>;
+  create(user: User): Promise<void>;
 }

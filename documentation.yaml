@@ -54,6 +54,145 @@ paths:
                     status: error
                     error:
                       message: Sample error message
+  /auth/users/signup:
+    post:
+      operationId: PostAuthUsersSignup
+      tags:
+        - auth
+      requestBody:
+        description: POST /auth/users/signup Request body
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fullName:
+                  type: string
+                  minLength: 4
+                email:
+                  type: string
+                  format: email
+                  minLength: 1
+                password:
+                  type: string
+                  minLength: 4
+              required:
+                - fullName
+                - email
+                - password
+      responses:
+        "201":
+          description: POST /auth/users/signup Positive response 201
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: created
+                  data:
+                    type: object
+                    properties:
+                      createdAt:
+                        description: YYYY-MM-DDTHH:mm:ss.sssZ
+                        type: string
+                        format: date-time
+                        externalDocs:
+                          url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
+                      externalId:
+                        type: string
+                        format: uuid
+                      token:
+                        type: string
+                        minLength: 1
+                    required:
+                      - createdAt
+                      - externalId
+                      - token
+                required:
+                  - status
+                  - data
+        "202":
+          description: POST /auth/users/signup Positive response 202
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: created
+                  data:
+                    type: object
+                    properties:
+                      createdAt:
+                        description: YYYY-MM-DDTHH:mm:ss.sssZ
+                        type: string
+                        format: date-time
+                        externalDocs:
+                          url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
+                      externalId:
+                        type: string
+                        format: uuid
+                      token:
+                        type: string
+                        minLength: 1
+                    required:
+                      - createdAt
+                      - externalId
+                      - token
+                required:
+                  - status
+                  - data
+        "400":
+          description: POST /auth/users/signup Negative response 400
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: error
+                  reason:
+                    type: string
+                required:
+                  - status
+                  - reason
+        "409":
+          description: POST /auth/users/signup Negative response 409
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: exists
+                  id:
+                    type: integer
+                    format: int64
+                    minimum: -9007199254740991
+                    maximum: 9007199254740991
+                required:
+                  - status
+                  - id
+        "500":
+          description: POST /auth/users/signup Negative response 500
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: error
+                  reason:
+                    type: string
+                required:
+                  - status
+                  - reason
   /cms:
     get:
       operationId: GetCms

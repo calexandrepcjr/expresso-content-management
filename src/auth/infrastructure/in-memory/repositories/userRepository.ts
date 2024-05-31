@@ -20,6 +20,7 @@ export class UserRepository implements DomainUserRepository {
         id: 1,
         fullName: "Root",
         email: "root@root.com",
+        password: process.env["ROOT_PASSWORD"] ?? "1234",
         externalId: Config.RootUserExternalId,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -55,11 +56,8 @@ export class UserRepository implements DomainUserRepository {
     );
   }
 
-  public async create(
-    userId: UserExternalId,
-    aUser: MutableRequired<User>,
-  ): Promise<void> {
-    const someUsers = UserRepository.storage.get(userId);
+  public async create(aUser: MutableRequired<User>): Promise<void> {
+    const someUsers = UserRepository.storage.get(aUser.externalId);
 
     if (!someUsers) {
       UserRepository.lastId = 1;
@@ -71,7 +69,7 @@ export class UserRepository implements DomainUserRepository {
       });
       aUser.id = aNewUser.id;
 
-      UserRepository.storage.set(userId, aNewUser);
+      UserRepository.storage.set(aNewUser.externalId, aNewUser);
 
       return;
     }
