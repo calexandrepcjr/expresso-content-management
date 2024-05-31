@@ -1,7 +1,8 @@
 import request from "supertest";
 import { HttpStatusCode } from "@src/utils/httpStatusCode";
 import { InternetMediaType } from "@src/utils/internetMediaType";
-import { Config } from "@src/content-management-system/config/config";
+import { createUser } from "../../../auth/test-utils/createUser";
+import { PostResponse } from "@src/content-management-system/presentation/messages/postResponse";
 
 const localRequest = request("http://localhost:3000");
 
@@ -10,21 +11,8 @@ describe("[CMS] Posts", () => {
     it("responds with all posts", async () => {
       // INFO: Makes sure the test suite health considering the PUT/PATCH calls
       // while we don't have auth to generate fake users bound by test suite executions
-      const expected = {
-        status: "success",
-        data: {
-          deletedAt: expect.any(String),
-        },
-      };
 
-      const response = await localRequest
-        .delete(`/cms/${Config.RootUserExternalId}/posts`)
-        .set("Content-Type", InternetMediaType.ApplicationJson)
-        .set("Accept", InternetMediaType.ApplicationJson);
-
-      expect(response.statusCode).toBe(HttpStatusCode.OK);
-      expect(response.body).toBeInstanceOf(Object);
-      expect(response.body).toMatchObject(expected);
+      const user = await createUser();
 
       const allPostsExpected = {
         status: "success",
@@ -34,7 +22,7 @@ describe("[CMS] Posts", () => {
               id: expect.any(Number),
               category: "Nerdy stuff",
               content: "Testing some nerdy stuff",
-              author: "Root",
+              author: user.payload.fullName,
               createdAt: expect.any(String),
               updatedAt: expect.any(String),
             },
@@ -42,7 +30,7 @@ describe("[CMS] Posts", () => {
               id: expect.any(Number),
               category: "Career",
               content: "A serious blog post regarding career",
-              author: "Root",
+              author: user.payload.fullName,
               createdAt: expect.any(String),
               updatedAt: expect.any(String),
             },
@@ -52,13 +40,15 @@ describe("[CMS] Posts", () => {
 
       for (const post of allPostsExpected.data.posts) {
         const payload = {
+          externalId: user.result.externalId,
           category: post.category,
           content: post.content,
         };
 
         const response = await localRequest
-          .post(`/cms/${Config.RootUserExternalId}/posts`)
+          .post("/cms/posts")
           .send(payload)
+          .set("authorization", user.result.token)
           .set("Content-Type", InternetMediaType.ApplicationJson)
           .set("Accept", InternetMediaType.ApplicationJson);
 
@@ -70,7 +60,15 @@ describe("[CMS] Posts", () => {
 
       expect(allPostsResponse.statusCode).toBe(HttpStatusCode.OK);
       expect(allPostsResponse.body).toBeInstanceOf(Object);
-      expect(allPostsResponse.body).toMatchObject(allPostsExpected);
+
+      const userPostsFromResponse = allPostsResponse.body.data.posts.filter(
+        (post: PostResponse) => post.author === user.payload.fullName,
+      );
+
+      expect(userPostsFromResponse).toHaveLength(
+        allPostsExpected.data.posts.length,
+      );
+      expect(userPostsFromResponse).toMatchObject(allPostsExpected.data.posts);
     });
   });
 });

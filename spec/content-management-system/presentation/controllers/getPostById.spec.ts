@@ -1,29 +1,15 @@
 import request from "supertest";
 import { HttpStatusCode } from "@src/utils/httpStatusCode";
-import { Config } from "@src/content-management-system/config/config";
-import { InternetMediaType } from "@src/utils/internetMediaType";
-import { faker } from "@faker-js/faker";
+import { createPost } from "../../../auth/test-utils/createPost";
+import { createUser } from "../../../auth/test-utils/createUser";
 
 const localRequest = request("http://localhost:3000");
 
 describe("[CMS] Posts", () => {
   describe("GET /cms/posts/:postId", () => {
     it("responds with a specific user post", async () => {
-      const createPayload = {
-        category: faker.word.noun(),
-        content: faker.lorem.paragraph(),
-      };
-
-      const createResponse = await localRequest
-        .post(`/cms/${Config.RootUserExternalId}/posts`)
-        .send(createPayload)
-        .set("Content-Type", InternetMediaType.ApplicationJson)
-        .set("Accept", InternetMediaType.ApplicationJson);
-
-      expect(createResponse.statusCode).toBe(HttpStatusCode.Created);
-      expect(createResponse.body).toBeInstanceOf(Object);
-
-      const { post } = createResponse.body.data;
+      const user = await createUser();
+      const post = await createPost(user);
 
       const expectedPost = post;
 
@@ -34,7 +20,7 @@ describe("[CMS] Posts", () => {
             id: expectedPost?.id ?? 1,
             category: expectedPost?.category ?? "Nerdy Stuff",
             content: expectedPost?.content ?? "Testing some nerdy stuff",
-            author: "Root",
+            author: user.payload.fullName,
             createdAt: expect.any(String),
             updatedAt: expect.any(String),
           },

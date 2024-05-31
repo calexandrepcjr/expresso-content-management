@@ -3,8 +3,11 @@ import { CreateUserSpec } from "./createUser";
 import { localRequest } from "./localRequest";
 import { InternetMediaType } from "@src/utils/internetMediaType";
 import { HttpStatusCode } from "@src/utils/httpStatusCode";
+import { Post } from "@src/content-management-system/domain/entities/post";
 
-export const createPost = async (createUserData: CreateUserSpec) => {
+export const createPost = async (
+  createUserData: CreateUserSpec,
+): Promise<Post> => {
   const user = createUserData;
 
   const expected = {
@@ -36,4 +39,8 @@ export const createPost = async (createUserData: CreateUserSpec) => {
   expect(response.statusCode).toBe(HttpStatusCode.Created);
   expect(response.body).toBeInstanceOf(Object);
   expect(response.body).toMatchObject(expected);
+
+  const { post } = response.body.data;
+
+  return post;
 };

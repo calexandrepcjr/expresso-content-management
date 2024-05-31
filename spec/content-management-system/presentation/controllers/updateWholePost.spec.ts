@@ -1,35 +1,23 @@
 import request from "supertest";
 import { HttpStatusCode } from "@src/utils/httpStatusCode";
 import { faker } from "@faker-js/faker";
-import { Config } from "@src/content-management-system/config/config";
 import { InternetMediaType } from "@src/utils/internetMediaType";
+import { createUser } from "../../../auth/test-utils/createUser";
+import { createPost } from "../../../auth/test-utils/createPost";
 
 const localRequest = request("http://localhost:3000");
 
 describe("[CMS] Posts", () => {
-  describe("PUT /cms/:userId/posts/:postId", () => {
+  describe("PUT /cms/posts/:postId", () => {
     it("updates a whole user post", async () => {
-      const createPayload = {
-        category: faker.word.noun(),
-        content: faker.lorem.paragraph(),
-      };
-
-      const createResponse = await localRequest
-        .post(`/cms/${Config.RootUserExternalId}/posts`)
-        .send(createPayload)
-        .set("Content-Type", InternetMediaType.ApplicationJson)
-        .set("Accept", InternetMediaType.ApplicationJson);
-
-      expect(createResponse.statusCode).toBe(HttpStatusCode.Created);
-      expect(createResponse.body).toBeInstanceOf(Object);
-
-      const { post } = createResponse.body.data;
+      const user = await createUser();
+      const post = await createPost(user);
 
       const expectedPost = {
         id: post?.id ?? 3,
         category: faker.word.noun(),
         content: faker.lorem.paragraphs(),
-        authorId: 1,
+        authorId: expect.any(Number),
         createdAt: expect.any(String),
         updatedAt: expect.any(String),
       };
@@ -42,7 +30,7 @@ describe("[CMS] Posts", () => {
       const payload = expectedPost;
 
       const response = await localRequest
-        .put(`/cms/${Config.RootUserExternalId}/posts/${expectedPost.id}`)
+        .put(`/cms/${user.result.externalId}/posts/${expectedPost.id}`)
         .send(payload)
         .set("Content-Type", InternetMediaType.ApplicationJson)
         .set("Accept", InternetMediaType.ApplicationJson);
@@ -64,7 +52,7 @@ describe("[CMS] Posts", () => {
           post: {
             ...expectedPost,
             authorId: undefined,
-            author: "Root",
+            author: user.payload.fullName,
           },
         },
       });
