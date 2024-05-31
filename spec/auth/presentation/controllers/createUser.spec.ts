@@ -6,7 +6,7 @@ import { InternetMediaType } from "@src/utils/internetMediaType";
 const localRequest = request("http://localhost:3000");
 
 describe("[Auth] Users", () => {
-  describe("POST /auth/users", () => {
+  describe("POST /auth/users/signup", () => {
     it("creates a user", async () => {
       const expected = {
         status: "created",
@@ -23,7 +23,7 @@ describe("[Auth] Users", () => {
       };
 
       const response = await localRequest
-        .post("/auth/users")
+        .post("/auth/users/signup")
         .send(payload)
         .set("Content-Type", InternetMediaType.ApplicationJson)
         .set("Accept", InternetMediaType.ApplicationJson);
