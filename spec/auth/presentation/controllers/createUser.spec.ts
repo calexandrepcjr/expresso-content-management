@@ -12,6 +12,7 @@ describe("[Auth] Users", () => {
         status: "created",
         data: {
           createdAt: expect.any(String),
+          externalId: expect.any(String),
           token: expect.any(String),
         },
       };
