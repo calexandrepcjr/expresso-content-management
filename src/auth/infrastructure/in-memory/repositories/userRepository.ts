@@ -73,9 +73,9 @@ export class UserRepository implements DomainUserRepository {
   public async create(aUser: MutableRequired<User>): Promise<void> {
     const someUsers = UserRepository.storage.get(aUser.externalId);
 
-    if (!someUsers) {
-      UserRepository.lastId = 1;
+    UserRepository.lastId += 1;
 
+    if (!someUsers) {
       await aUser.password.generate();
 
       const aNewUser = new User({
@@ -88,8 +88,6 @@ export class UserRepository implements DomainUserRepository {
 
       return;
     }
-
-    UserRepository.lastId += 1;
 
     const aNewUser = new User({
       ...aUser,
@@ -165,6 +163,11 @@ export class UserRepository implements DomainUserRepository {
         ) ?? User.empty(),
       );
     }
+
+    this.logger.debug("findGroupByIds", {
+      groupByIds,
+      usersStorage: UserRepository.storage,
+    });
 
     return either.right(groupByIds);
   }
