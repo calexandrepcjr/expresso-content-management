@@ -50,14 +50,10 @@ export const createPost = statusDependingFactory.build({
           await postsRepository.create(user, post);
 
           if (!post.isPersisted()) {
-            throw createHttpError(HttpStatusCode.InternalServerError, {
-              errors: [
-                {
-                  name: "InfrastructureError",
-                  message: "Failed to persist Post",
-                },
-              ],
-            });
+            throw createHttpError(
+              HttpStatusCode.InternalServerError,
+              "Failed to persist Post",
+            );
           }
 
           return { post };

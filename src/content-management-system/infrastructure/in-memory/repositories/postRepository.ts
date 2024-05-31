@@ -100,8 +100,8 @@ export class PostRepository implements DomainPostRepository {
     someUserPosts.set(aNewPost.id, aNewPost);
   }
 
-  public async update(userId: string, aPost: Post): Promise<void> {
-    const someUserPosts = PostRepository.storage.get(userId);
+  public async update(user: User, aPost: Post): Promise<void> {
+    const someUserPosts = PostRepository.storage.get(user.externalId);
     const aLoadedPost = someUserPosts?.get(aPost.id);
 
     pipe(

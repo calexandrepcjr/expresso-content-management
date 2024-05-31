@@ -61,14 +61,10 @@ export const getPosts = taggedEndpointsFactory.build({
       ),
       taskEither.match(
         (anError) => {
-          throw createHttpError(HttpStatusCode.InternalServerError, {
-            errors: [
-              {
-                name: anError.name,
-                message: anError.message,
-              },
-            ],
-          });
+          throw createHttpError(
+            HttpStatusCode.InternalServerError,
+            anError.message,
+          );
         },
         (postResponses) => ({ posts: postResponses }),
       ),

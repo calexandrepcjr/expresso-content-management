@@ -35,28 +35,20 @@ export const removeAllUserPosts = taggedEndpointsFactory.build({
       maybeUser,
       either.match(
         (anError) => {
-          throw createHttpError(HttpStatusCode.InternalServerError, {
-            errors: [
-              {
-                name: anError.name,
-                message: anError.message,
-              },
-            ],
-          });
+          throw createHttpError(
+            HttpStatusCode.InternalServerError,
+            anError.message,
+          );
         },
         async (user) => {
           await postsRepository.removeByUser(user);
 
           if (!user.isValid()) {
             const anError = user.invalidationReason();
-            throw createHttpError(HttpStatusCode.InternalServerError, {
-              errors: [
-                {
-                  name: anError.name,
-                  message: anError.message,
-                },
-              ],
-            });
+            throw createHttpError(
+              HttpStatusCode.InternalServerError,
+              anError.message,
+            );
           }
 
           return { deletedAt: new Date() };

@@ -42,13 +42,7 @@ export const updateWholePost = taggedEndpointsFactory.build({
       updatedAt: ez.dateOut(),
     }),
   }),
-  handler: async ({ input: { userId, postId, category, content }, logger }) => {
-    logger.debug("Update Whole Post", {
-      postId,
-      category,
-      content,
-    });
-
+  handler: async ({ input: { userId, postId, category, content } }) => {
     // TODO: Send to Use Case
     const maybeUser = await usersRepository.findByExternalId(userId);
 
@@ -75,18 +69,14 @@ export const updateWholePost = taggedEndpointsFactory.build({
             updatedAt: post.updatedAt,
           });
 
-          await postsRepository.update(user.externalId, aNewPost);
+          await postsRepository.update(user, aNewPost);
 
           if (!aNewPost.isValid()) {
             const reason = aNewPost.invalidationReason();
-            throw createHttpError(HttpStatusCode.InternalServerError, {
-              errors: [
-                {
-                  name: reason.name,
-                  message: reason.message,
-                },
-              ],
-            });
+            throw createHttpError(
+              HttpStatusCode.InternalServerError,
+              reason.message,
+            );
           }
 
           return { post: aNewPost };
@@ -94,14 +84,10 @@ export const updateWholePost = taggedEndpointsFactory.build({
         (reason: unknown) => new Error(String(reason)),
       );
     const failureFlow = (anError: Error) => {
-      throw createHttpError(HttpStatusCode.InternalServerError, {
-        errors: [
-          {
-            name: anError.name,
-            message: anError.message,
-          },
-        ],
-      });
+      throw createHttpError(
+        HttpStatusCode.InternalServerError,
+        anError.message,
+      );
     };
 
     return pipe(
