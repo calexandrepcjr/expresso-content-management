@@ -881,6 +881,124 @@ paths:
                     status: error
                     error:
                       message: Sample error message
+    patch:
+      operationId: PatchCmsPostsPostId
+      summary: Update partially Post content
+      tags:
+        - posts
+      parameters:
+        - name: postId
+          in: path
+          required: true
+          description: A numeric string containing the id of the Post
+          schema:
+            type: string
+            pattern: \d+
+            description: A numeric string containing the id of the Post
+      requestBody:
+        description: PATCH /cms/posts/:postId Request body
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                externalId:
+                  type: string
+                  minLength: 1
+                category:
+                  type:
+                    - string
+                    - "null"
+                content:
+                  type:
+                    - string
+                    - "null"
+              required:
+                - externalId
+      security:
+        - APIKEY_1: []
+          APIKEY_2: []
+      responses:
+        "200":
+          description: PATCH /cms/posts/:postId Positive response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: success
+                  data:
+                    type: object
+                    properties:
+                      post:
+                        type: object
+                        properties:
+                          id:
+                            type: number
+                            format: double
+                            minimum: -1.7976931348623157e+308
+                            maximum: 1.7976931348623157e+308
+                          category:
+                            type: string
+                          content:
+                            type: string
+                          authorId:
+                            type: number
+                            format: double
+                            minimum: -1.7976931348623157e+308
+                            maximum: 1.7976931348623157e+308
+                          createdAt:
+                            description: YYYY-MM-DDTHH:mm:ss.sssZ
+                            type: string
+                            format: date-time
+                            externalDocs:
+                              url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
+                          updatedAt:
+                            description: YYYY-MM-DDTHH:mm:ss.sssZ
+                            type: string
+                            format: date-time
+                            externalDocs:
+                              url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
+                        required:
+                          - id
+                          - category
+                          - content
+                          - authorId
+                          - createdAt
+                          - updatedAt
+                    required:
+                      - post
+                required:
+                  - status
+                  - data
+        "400":
+          description: PATCH /cms/posts/:postId Negative response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    const: error
+                  error:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                    required:
+                      - message
+                required:
+                  - status
+                  - error
+              examples:
+                example1:
+                  value:
+                    status: error
+                    error:
+                      message: Sample error message
   /cms/health:
     get:
       operationId: GetCmsHealth

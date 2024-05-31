@@ -6,6 +6,7 @@ import { getPosts } from "@src/content-management-system/presentation/controller
 import { getPostById } from "@src/content-management-system/presentation/controllers/getPostById";
 import { updateWholePost } from "@src/content-management-system/presentation/controllers/updateWholePost";
 import { removeAllUserPosts } from "@src/content-management-system/presentation/controllers/removeAllUserPosts";
+import { updatePostPartially } from "@src/content-management-system/presentation/controllers/updatePostPartially";
 
 export const routes: Routing = {
   cms: {
@@ -19,6 +20,7 @@ export const routes: Routing = {
       ":postId": new DependsOnMethod({
         get: getPostById,
         put: updateWholePost,
+        patch: updatePostPartially,
       }),
     },
     health: getHealth,

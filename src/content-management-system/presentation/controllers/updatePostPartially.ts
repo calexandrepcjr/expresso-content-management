@@ -14,12 +14,12 @@ import { authorizer } from "@src/auth/presentation/middlewares/authorizer";
 // TODO: Use DI
 const postsRepository = new PostRepository();
 
-export const updateWholePost = taggedEndpointsFactory
+export const updatePostPartially = taggedEndpointsFactory
   .addMiddleware(authorizer)
   .build({
-    method: "put",
+    method: "patch",
     tag: "posts",
-    shortDescription: "Update whole Post content",
+    shortDescription: "Update partially Post content",
     input: z.object({
       postId: z
         .string()
@@ -27,8 +27,8 @@ export const updateWholePost = taggedEndpointsFactory
         .regex(/\d+/)
         .transform((id) => parseInt(id, 10))
         .describe("A numeric string containing the id of the Post"),
-      category: z.string(),
-      content: z.string(),
+      category: z.string().nullish(),
+      content: z.string().nullish(),
     }),
     output: z.object({
       post: z.object({
@@ -62,8 +62,8 @@ export const updateWholePost = taggedEndpointsFactory
           async () => {
             const aNewPost = new Post({
               id: postId,
-              category,
-              content,
+              category: category ?? post.category,
+              content: content ?? post.content,
               authorId: user.id,
               createdAt: post.createdAt,
               updatedAt: new Date(),
