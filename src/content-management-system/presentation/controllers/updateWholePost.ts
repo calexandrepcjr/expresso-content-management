@@ -37,6 +37,7 @@ export const updateWholePost = taggedEndpointsFactory.build({
       id: z.number(),
       category: z.string(),
       content: z.string(),
+      authorId: z.number(),
       createdAt: ez.dateOut(),
       updatedAt: ez.dateOut(),
     }),
@@ -69,7 +70,7 @@ export const updateWholePost = taggedEndpointsFactory.build({
             id: postId,
             category,
             content,
-            author: user.id,
+            authorId: user.id,
             createdAt: post.createdAt,
             updatedAt: post.updatedAt,
           });

@@ -497,6 +497,8 @@ paths:
                               type: string
                             content:
                               type: string
+                            author:
+                              type: string
                             createdAt:
                               description: YYYY-MM-DDTHH:mm:ss.sssZ
                               type: string
@@ -513,6 +515,7 @@ paths:
                             - id
                             - category
                             - content
+                            - author
                             - createdAt
                             - updatedAt
                     required:
@@ -754,6 +757,8 @@ paths:
                             type: string
                           content:
                             type: string
+                          author:
+                            type: string
                           createdAt:
                             description: YYYY-MM-DDTHH:mm:ss.sssZ
                             type: string
@@ -770,6 +775,7 @@ paths:
                           - id
                           - category
                           - content
+                          - author
                           - createdAt
                           - updatedAt
                     required:

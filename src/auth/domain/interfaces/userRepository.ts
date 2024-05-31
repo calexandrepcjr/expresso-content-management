@@ -3,5 +3,9 @@ import { User } from "@src/auth/domain/entities/user";
 import { UserExternalId } from "@src/auth/domain/interfaces/userExternalId";
 
 export interface UserRepository {
-  findByExternalId(userId: UserExternalId): Promise<Either<Error, User>>;
+  findGroupByIds(ids: number[]): Promise<Either<Error, Map<number, User>>>;
+  findByExternalId(
+    userExternalId: UserExternalId,
+  ): Promise<Either<Error, User>>;
+  findById(userId: number): Promise<Either<Error, User>>;
 }

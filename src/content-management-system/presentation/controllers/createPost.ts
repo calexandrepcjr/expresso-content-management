@@ -28,6 +28,7 @@ export const createPost = statusDependingFactory.build({
       id: z.number(),
       category: z.string(),
       content: z.string(),
+      authorId: z.number(),
       createdAt: ez.dateOut(),
       updatedAt: ez.dateOut(),
     }),

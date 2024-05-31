@@ -26,6 +26,8 @@ export class UserRepository implements DomainUserRepository {
       }),
     ],
   ]);
+  private static readonly storageIndexById: Map<number, UserExternalId> =
+    new Map<number, UserExternalId>([[1, Config.RootUserExternalId]]);
   private static lastId: number = 1;
   private readonly logger: BuiltinLogger;
 
@@ -45,10 +47,10 @@ export class UserRepository implements DomainUserRepository {
   }
 
   public async findByExternalId(
-    userId: UserExternalId,
+    userExternalId: UserExternalId,
   ): Promise<Either<Error, User>> {
     return pipe(
-      UserRepository.storage.get(userId),
+      UserRepository.storage.get(userExternalId),
       either.fromNullable(new Error("User Not Found")),
     );
   }
@@ -84,6 +86,7 @@ export class UserRepository implements DomainUserRepository {
     aUser.id = aNewUser.id;
 
     UserRepository.storage.set(aNewUser.externalId, aNewUser);
+    UserRepository.storageIndexById.set(aNewUser.id, aNewUser.externalId);
   }
 
   public async update(aUser: User): Promise<void> {
@@ -121,8 +124,35 @@ export class UserRepository implements DomainUserRepository {
         },
         (aLoadedUser) => {
           UserRepository.storage.delete(aLoadedUser.externalId);
+          UserRepository.storageIndexById.delete(aLoadedUser.id);
         },
       ),
     );
+  }
+
+  public async findById(userId: number): Promise<Either<Error, User>> {
+    return pipe(
+      UserRepository.storage.get(
+        UserRepository.storageIndexById.get(userId) ?? "",
+      ),
+      either.fromNullable(new Error("User not Found")),
+    );
+  }
+
+  public async findGroupByIds(
+    ids: number[],
+  ): Promise<Either<Error, Map<number, User>>> {
+    const groupByIds = new Map<number, User>();
+
+    for (const id of ids) {
+      groupByIds.set(
+        id,
+        UserRepository.storage.get(
+          UserRepository.storageIndexById.get(id) ?? "",
+        ) ?? User.empty(),
+      );
+    }
+
+    return either.right(groupByIds);
   }
 }
