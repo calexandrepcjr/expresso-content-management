@@ -23,7 +23,8 @@ export const authorizer = createMiddleware({
   middleware: async ({ input: { externalId }, request, logger }) => {
     logger.debug("Checking the externalId and token");
 
-    const authorizationToken = request.headers.authorization;
+    const authorizationToken =
+      request.headers.authorization ?? request.headers["Authorization"]?.[0];
 
     const maybeUser = await usersRepository.findByExternalId(externalId);
 

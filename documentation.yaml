@@ -76,6 +76,7 @@ paths:
                 password:
                   type: string
                   minLength: 4
+                  maxLength: 30
               required:
                 - fullName
                 - email
@@ -105,7 +106,7 @@ paths:
                         format: uuid
                       token:
                         type: string
-                        minLength: 1
+                        minLength: 60
                     required:
                       - createdAt
                       - externalId
@@ -137,7 +138,7 @@ paths:
                         format: uuid
                       token:
                         type: string
-                        minLength: 1
+                        minLength: 60
                     required:
                       - createdAt
                       - externalId
@@ -194,29 +195,31 @@ paths:
                   - status
                   - reason
   /auth/users/login:
-    get:
-      operationId: GetAuthUsersLogin
+    post:
+      operationId: PostAuthUsersLogin
       tags:
         - auth
-      parameters:
-        - name: email
-          in: query
-          required: true
-          description: GET /auth/users/login Parameter
-          schema:
-            type: string
-            format: email
-            minLength: 1
-        - name: password
-          in: query
-          required: true
-          description: GET /auth/users/login Parameter
-          schema:
-            type: string
-            minLength: 4
+      requestBody:
+        description: POST /auth/users/login Request body
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  minLength: 1
+                password:
+                  type: string
+                  minLength: 4
+                  maxLength: 30
+              required:
+                - email
+                - password
       responses:
         "200":
-          description: GET /auth/users/login Positive response
+          description: POST /auth/users/login Positive response
           content:
             application/json:
               schema:
@@ -233,7 +236,7 @@ paths:
                         format: uuid
                       token:
                         type: string
-                        minLength: 1
+                        minLength: 60
                     required:
                       - externalId
                       - token
@@ -241,7 +244,7 @@ paths:
                   - status
                   - data
         "400":
-          description: GET /auth/users/login Negative response
+          description: POST /auth/users/login Negative response
           content:
             application/json:
               schema:
@@ -391,190 +394,6 @@ paths:
                     status: error
                     error:
                       message: Sample error message
-    post:
-      operationId: PostCmsUserIdPosts
-      tags: &a1
-        - posts
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          description: An UUID representing the User
-          schema:
-            type: string
-            format: uuid
-            description: An UUID representing the User
-      requestBody:
-        description: POST /cms/:userId/posts Request body
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                category:
-                  type: string
-                content:
-                  type: string
-              required:
-                - category
-                - content
-      responses:
-        "201":
-          description: POST /cms/:userId/posts Positive response 201
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    const: created
-                  data:
-                    type: object
-                    properties:
-                      post:
-                        type: object
-                        properties:
-                          id:
-                            type: number
-                            format: double
-                            minimum: -1.7976931348623157e+308
-                            maximum: 1.7976931348623157e+308
-                          category:
-                            type: string
-                          content:
-                            type: string
-                          authorId:
-                            type: number
-                            format: double
-                            minimum: -1.7976931348623157e+308
-                            maximum: 1.7976931348623157e+308
-                          createdAt:
-                            description: YYYY-MM-DDTHH:mm:ss.sssZ
-                            type: string
-                            format: date-time
-                            externalDocs:
-                              url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
-                          updatedAt:
-                            description: YYYY-MM-DDTHH:mm:ss.sssZ
-                            type: string
-                            format: date-time
-                            externalDocs:
-                              url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
-                        required:
-                          - id
-                          - category
-                          - content
-                          - authorId
-                          - createdAt
-                          - updatedAt
-                    required:
-                      - post
-                required:
-                  - status
-                  - data
-        "202":
-          description: POST /cms/:userId/posts Positive response 202
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    const: created
-                  data:
-                    type: object
-                    properties:
-                      post:
-                        type: object
-                        properties:
-                          id:
-                            type: number
-                            format: double
-                            minimum: -1.7976931348623157e+308
-                            maximum: 1.7976931348623157e+308
-                          category:
-                            type: string
-                          content:
-                            type: string
-                          authorId:
-                            type: number
-                            format: double
-                            minimum: -1.7976931348623157e+308
-                            maximum: 1.7976931348623157e+308
-                          createdAt:
-                            description: YYYY-MM-DDTHH:mm:ss.sssZ
-                            type: string
-                            format: date-time
-                            externalDocs:
-                              url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
-                          updatedAt:
-                            description: YYYY-MM-DDTHH:mm:ss.sssZ
-                            type: string
-                            format: date-time
-                            externalDocs:
-                              url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString
-                        required:
-                          - id
-                          - category
-                          - content
-                          - authorId
-                          - createdAt
-                          - updatedAt
-                    required:
-                      - post
-                required:
-                  - status
-                  - data
-        "400":
-          description: POST /cms/:userId/posts Negative response 400
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    const: error
-                  reason:
-                    type: string
-                required:
-                  - status
-                  - reason
-        "409":
-          description: POST /cms/:userId/posts Negative response 409
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    const: exists
-                  id:
-                    type: integer
-                    format: int64
-                    minimum: -9007199254740991
-                    maximum: 9007199254740991
-                required:
-                  - status
-                  - id
-        "500":
-          description: POST /cms/:userId/posts Negative response 500
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    const: error
-                  reason:
-                    type: string
-                required:
-                  - status
-                  - reason
   /cms/{userId}/posts/{postId}:
     put:
       operationId: PutCmsUserIdPostsPostId
@@ -781,7 +600,9 @@ paths:
                       message: Sample error message
     post:
       operationId: PostCmsPosts
-      tags: *a1
+      summary: Creates a User Post.
+      tags:
+        - posts
       requestBody:
         description: POST /cms/posts Request body
         content:
@@ -789,18 +610,20 @@ paths:
             schema:
               type: object
               properties:
-                userId:
+                externalId:
                   type: string
-                  format: uuid
-                  description: An UUID representing the User
+                  minLength: 1
                 category:
                   type: string
                 content:
                   type: string
               required:
-                - userId
+                - externalId
                 - category
                 - content
+      security:
+        - APIKEY_1: []
+          APIKEY_2: []
       responses:
         "201":
           description: POST /cms/posts Positive response 201
@@ -1115,7 +938,17 @@ components:
   examples: {}
   requestBodies: {}
   headers: {}
-  securitySchemes: {}
+  securitySchemes:
+    APIKEY_1:
+      type: apiKey
+      in: query
+      name: externalId
+      x-in-actual: body
+      description: externalId MUST be supplied within the request body instead of query
+    APIKEY_2:
+      type: apiKey
+      in: header
+      name: authorization
   links: {}
   callbacks: {}
 tags: []

@@ -14,7 +14,6 @@ export const routes: Routing = {
       posts: {
         "": new DependsOnMethod({
           delete: removeAllUserPosts,
-          post: createPost,
         }),
         ":postId": new DependsOnMethod({
           put: updateWholePost,
