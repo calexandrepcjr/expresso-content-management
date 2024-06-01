@@ -14,6 +14,7 @@
     "predev": "npm run build:docs",
     "dev": "tsc --noEmit && tsx watch --env-file=.env.local --require tsconfig-paths/register src/httpServer",
     "test": "dotenvx run --env-file=.env.local -- jest --runInBand",
+    "test:e2e": "npm run test -- --selectProjects e2e",
     "lint": "eslint . --ext .ts --fix",
     "build:docs": "tsx --env-file=.env.local --require tsconfig-paths/register src/generateDocumentation"
   },
@@ -68,8 +69,24 @@
       "node_modules",
       "<rootDir>"
     ],
+    "projects": [
+      {
+        "displayName": "e2e",
+        "testMatch": [
+          "<rootDir>/spec/**/e2e/**/*.spec.ts"
+        ],
+        "transform": {
+          "^.+\\.tsx?$": "ts-jest"
+        },
+        "moduleNameMapper": {
+          "^@src/(.*)$": "<rootDir>/src/$1",
+          "^@spec/(.*)$": "<rootDir>/spec/$1"
+        }
+      }
+    ],
     "moduleNameMapper": {
-      "^@src/(.*)$": "<rootDir>/src/$1"
+      "^@src/(.*)$": "<rootDir>/src/$1",
+      "^@spec/(.*)$": "<rootDir>/spec/$1"
     },
     "preset": "ts-jest",
     "testEnvironment": "node",

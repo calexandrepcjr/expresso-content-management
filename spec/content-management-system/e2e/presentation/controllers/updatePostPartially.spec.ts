@@ -2,38 +2,35 @@ import request from "supertest";
 import { HttpStatusCode } from "@src/utils/httpStatusCode";
 import { faker } from "@faker-js/faker";
 import { InternetMediaType } from "@src/utils/internetMediaType";
-import { createUser } from "../../../auth/test-utils/createUser";
-import { createPost } from "../../../auth/test-utils/createPost";
+import { createUser } from "@spec/auth/test-utils/createUser";
+import { createPost } from "@spec/auth/test-utils/createPost";
 
 const localRequest = request("http://localhost:3000");
 
 describe("[CMS] Posts", () => {
-  describe("PUT /cms/posts/:postId", () => {
-    it("updates a whole user post", async () => {
+  describe("PATCH /cms/posts/:postId", () => {
+    it("updates a user post partially", async () => {
       const user = await createUser();
-      const post = await createPost(user);
+      const expectedPost = await createPost(user);
 
-      const expectedPost = {
-        id: post?.id ?? 3,
+      const payload = {
         category: faker.word.noun(),
-        content: faker.lorem.paragraphs(),
-        authorId: expect.any(Number),
-        createdAt: expect.any(String),
-        updatedAt: expect.any(String),
+        content: undefined,
+        externalId: user.result.externalId,
       };
       const expected = {
         status: "success",
         data: {
-          post: expectedPost,
+          post: {
+            ...expectedPost,
+            category: payload.category,
+            updatedAt: expect.any(String),
+          },
         },
-      };
-      const payload = {
-        ...expectedPost,
-        externalId: user.result.externalId,
       };
 
       const response = await localRequest
-        .put(`/cms/posts/${expectedPost.id}`)
+        .patch(`/cms/posts/${expectedPost.id}`)
         .send(payload)
         .set("authorization", user.result.token)
         .set("Content-Type", InternetMediaType.ApplicationJson)
@@ -55,8 +52,10 @@ describe("[CMS] Posts", () => {
         data: {
           post: {
             ...expectedPost,
+            category: payload.category,
             authorId: undefined,
             author: user.payload.fullName,
+            updatedAt: expect.any(String),
           },
         },
       });

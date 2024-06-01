@@ -1,7 +1,7 @@
 import request from "supertest";
 import { HttpStatusCode } from "@src/utils/httpStatusCode";
-import { createPost } from "../../../auth/test-utils/createPost";
-import { createUser } from "../../../auth/test-utils/createUser";
+import { createPost } from "@spec/auth/test-utils/createPost";
+import { createUser } from "@spec/auth/test-utils/createUser";
 
 const localRequest = request("http://localhost:3000");
 

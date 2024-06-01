@@ -4,9 +4,9 @@ import { InternetMediaType } from "@src/utils/internetMediaType";
 import {
   CreateUserSpec,
   createUser,
-} from "../../../auth/test-utils/createUser";
-import { createPost } from "../../../auth/test-utils/createPost";
-import { removeAllPosts } from "../../../auth/test-utils/removeAllPosts";
+} from "@spec/auth/test-utils/createUser";
+import { createPost } from "@spec/auth/test-utils/createPost";
+import { removeAllPosts } from "@spec/auth/test-utils/removeAllPosts";
 
 const localRequest = request("http://localhost:3000");
 
